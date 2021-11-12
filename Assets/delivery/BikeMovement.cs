@@ -8,11 +8,16 @@ public class BikeMovement : MonoBehaviour
     public GameObject[] wheels;
     public float speed = 20;
     public float rotationSpeed = 20;
+    Vector3 PrevPos;
+    Vector3 NewPos;
+    Vector3 ObjVelocity;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        PrevPos = transform.position;
+        NewPos = transform.position;
     }
 
     void Update()
@@ -32,5 +37,15 @@ public class BikeMovement : MonoBehaviour
             //Debug.Log(rotate);
             wheel.transform.Rotate(new Vector3(0, rotate, 0));
         }
+    }
+
+    void FixedUpdate() {
+        NewPos = transform.position;  // each frame track the new position
+        ObjVelocity = (NewPos - PrevPos) / Time.fixedDeltaTime;  // velocity = dist/time
+        PrevPos = NewPos;  // update position for next frame calculation
+    }
+
+    public Vector3 getVelocity() {
+        return ObjVelocity;
     }
 }

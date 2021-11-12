@@ -16,34 +16,27 @@ public class Delivery_Map : MonoBehaviour
 
     
     public void DisplaceStreet(string facing, Vector3 parentPos, Delivery_Street street) {
-        Debug.Log(facing);
-        Debug.Log(parentPos);
-
-        foreach(GameObject _street in activeStreets) {
-            foreach(Delivery_Street delivery_Street in _street.GetComponentsInChildren<Delivery_Street>()) {
-                if (delivery_Street != street) delivery_Street.ChangeActivationState(false);
-                else delivery_Street.ChangeActivationState(true);
-            }
-        }
-
-        if(facing == "front") {
-            float farawayStreet = GetFarStreet("greater").transform.position.z;
-            Vector3 orgPos = GetFarStreet("smaller").transform.position;
-            GetFarStreet("smaller").transform.position = new Vector3(orgPos.x, orgPos.y, farawayStreet + displace);
+        GameObject greater = GetFarStreet("greater");
+        GameObject smaller = GetFarStreet("smaller");
+        if (facing == "front") {
+            float farawayStreet = greater.transform.position.z;
+            Vector3 smallerPos = smaller.transform.position;
+            Vector3 newPos = new Vector3(smallerPos.x, smallerPos.y, farawayStreet + displace);
+            smaller.transform.position = newPos;
         }
         else if(facing == "back") {
-            float farawayStreet = GetFarStreet("smaller").transform.position.z;
-            Vector3 orgPos = GetFarStreet("greater").transform.position;
-            GetFarStreet("greater").transform.position = new Vector3(orgPos.x, orgPos.y, farawayStreet - displace);
+            float farawayStreet = smaller.transform.position.z;
+            Vector3 greaterPos = greater.transform.position;
+            Vector3 newPos = new Vector3(greaterPos.x, greaterPos.y, farawayStreet - displace);
+            greater.transform.position = newPos;
         }
     }
 
 
     GameObject GetFarStreet(string amount) {
-        float pos = 0;
+        float pos = activeStreets[0].transform.position.z;
         int farStreet = 0;
         int streets = activeStreets.Length;
-
         for (int i = 0; i < streets; i++) {
             if (amount == "greater") {
                 if (activeStreets[i].transform.position.z > pos) {
@@ -57,7 +50,6 @@ public class Delivery_Map : MonoBehaviour
                 }
             }
         }
-
         return activeStreets[farStreet];
     }
 }
