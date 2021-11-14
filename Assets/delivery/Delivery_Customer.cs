@@ -4,21 +4,54 @@ using UnityEngine;
 
 namespace Delivery {
     public class Delivery_Customer : MonoBehaviour {
-        public BoxCollider trigger;
-        // Start is called before the first frame update
-        void Start() {
-            // Perform animation
-        }
+        [SerializeField]
+        int points = 1;
 
-        private void OnCollisionEnter(Collision collision) {
+        bool isReceivingPackage;
+        int secsReceivingPackage;
+        public int staySeconds = 3;
+        bool isDone;
+
+        private void OnTriggerEnter(Collider collider) {
             // Check if tag == player
+            if (!collider.CompareTag("Player")) return;
+            if (isDone) return;
 
+            isReceivingPackage = true;
+            StartCoroutine("WaitTillPackageIsDelivered");
         }
 
-        // Check if after x secs player is still here
+        IEnumerator WaitTillPackageIsDelivered() {
+            Delivery_Manager.control.ShowStaySign(staySeconds - secsReceivingPackage);
+            yield return new WaitForSeconds(1);
+            if (!isReceivingPackage) yield return null;
+            secsReceivingPackage += 1;
+            if (secsReceivingPackage == staySeconds) {
+                Done();
+            }
+            else {
+                StartCoroutine("WaitTillPackageIsDelivered");
+            }
+        }
 
+        private void OnTriggerExit(Collider collider) {
+            if (isDone) return;
+            if (!collider.CompareTag("Player")) return;
+            if (!isReceivingPackage) return;
 
-        // Die dissapear if player never arrived
+            isReceivingPackage = false;
+            secsReceivingPackage = 0;
+            Delivery_Manager.control.HideStaySign();
+        }
+
+        void Done() {
+            isDone = true;
+            Delivery_Manager.control.AddToPackagesDelivered(points);
+        }
+
+        public void Kill() {
+            Destroy(this.gameObject);
+        }
     }
 
 }
