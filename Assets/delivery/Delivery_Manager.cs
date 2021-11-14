@@ -70,7 +70,7 @@ public class Delivery_Manager : MonoBehaviour
 
     void UpdateTimeUI() {
         System.TimeSpan time = System.TimeSpan.FromSeconds(timeLeft);
-        UI_Time.text = $"Tiempo restante: {time.ToString("hh':'mm':'ss")}";
+        UI_Time.text = $"Tiempo restante: {time:hh':'mm':'ss}";
     }
 
     public void ShowPickupSign(int points) {

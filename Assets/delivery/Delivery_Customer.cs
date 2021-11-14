@@ -26,6 +26,7 @@ namespace Delivery {
             yield return new WaitForSeconds(1);
             if (!isReceivingPackage) yield return null;
             secsReceivingPackage += 1;
+
             if (secsReceivingPackage == staySeconds) {
                 Done();
             }
@@ -37,16 +38,17 @@ namespace Delivery {
         private void OnTriggerExit(Collider collider) {
             if (isDone) return;
             if (!collider.CompareTag("Player")) return;
-            if (!isReceivingPackage) return;
-
+            Debug.Log("Got here exit");
             isReceivingPackage = false;
             secsReceivingPackage = 0;
             Delivery_Manager.control.HideStaySign();
+            StopAllCoroutines();
         }
 
         void Done() {
             isDone = true;
             Delivery_Manager.control.AddToPackagesDelivered(points);
+            Kill();
         }
 
         public void Kill() {

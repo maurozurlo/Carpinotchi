@@ -215,7 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97f8cbddec3841b47adf9b54fb3e46cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hornSound: {fileID: 8300000, guid: 8defd879f7dd78e4599b230ef711a1b6, type: 3}
+  hornSound: {fileID: 0}
 --- !u!82 &154529228
 AudioSource:
   m_ObjectHideFlags: 0
@@ -226,11 +226,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 8defd879f7dd78e4599b230ef711a1b6, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -2641,7 +2641,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2051934282}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.84, y: 0.8, z: -16.8}
+  m_LocalPosition: {x: 8.12, y: 0.8, z: -33.73}
   m_LocalScale: {x: 1, y: 2.7025862, z: 3.8419456}
   m_Children:
   - {fileID: 118208379}
