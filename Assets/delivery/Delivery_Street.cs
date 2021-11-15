@@ -11,9 +11,10 @@ public class Delivery_Street : MonoBehaviour
     }
     private void OnTriggerEnter(Collider collider) {
         if (!collider.CompareTag("Player")) return;
-        Vector3 velocity = collider.GetComponent<BikeMovement>().getVelocity();
+        Vector3 velocity = collider.GetComponent<Delivery_Bike>().getVelocity();
         Vector3 localVel = collider.transform.TransformDirection(velocity);
         string facing = localVel.z < 0 ? "back" : "front";
+        Debug.Log(facing);
         Delivery_Map.control.DisplaceStreet(facing, parentPosition, this);
     }
 }

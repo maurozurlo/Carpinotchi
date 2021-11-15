@@ -28,6 +28,7 @@ public class Delivery_Manager : MonoBehaviour
     public GameObject rightSidewalkGizmo, leftSidewalkGizmo;
     public Vector2 distance = new Vector2(50, 100);
     public float noise;
+    bool lastSpawnedWasRight;
 
     //Audio
     AudioSource AS;
@@ -36,6 +37,7 @@ public class Delivery_Manager : MonoBehaviour
     public float timeLeft;
 
     int packagesDelivered = 0;
+    int pendingPackages = 1;
     
     private void Awake() {
         control = this;
@@ -57,15 +59,23 @@ public class Delivery_Manager : MonoBehaviour
     }
 
     public void AddToPackagesDelivered(int amount) {
+        pendingPackages--;
+
         timeLeft += amount * 10;
         packagesDelivered += amount;
+        StartCoroutine(HideSignAfterSeconds(AC_Pickup.length));
+
+        int howManyToSpawn = Mathf.RoundToInt(packagesDelivered * .3f) >= 1 ? Mathf.RoundToInt(packagesDelivered * .3f) : 1;
+        for (int i = 0; i < howManyToSpawn; i++) {
+            SpawnCustomer();
+        }
         UpdateUI();
         ShowPickupSign(amount);
-        StartCoroutine(HideSignAfterSeconds(AC_Pickup.length));
     }
 
     void UpdateUI() {
         UI_Packages.text = $"Paquetes entregados: {packagesDelivered}";
+        UI_PendingPackages.text = $"Pendientes: {pendingPackages}";
     }
 
     void UpdateTimeUI() {
@@ -80,6 +90,13 @@ public class Delivery_Manager : MonoBehaviour
 
     public void ShowStaySign(int seconds) {
         UI_Stay.text = $"No te muevas por {seconds} segundos!";
+        float pitch = 1;
+        switch (seconds){
+            case 1: pitch = 1.3f;break;
+            case 2: pitch = 1.1f; break;
+            case 3: pitch = 1f; break;
+        }
+        AS.pitch = pitch;
         AS.PlayOneShot(AC_Stay);
     }
 
@@ -94,16 +111,15 @@ public class Delivery_Manager : MonoBehaviour
 
 
     void SpawnCustomer() {
-        int indice = Random.Range(0, customerPrefabs.Length);
-        GameObject customer = customerPrefabs[indice];
-
-        Vector3 posicionDelJugador = BikeMovement.control.playerPosition();
-
-        float numeroRandom = Random.Range(distance.x, distance.y);
-
-        //posicionDelJugador.z;
-        Vector3 posicion = new Vector3(11.76f, -0.75f, posicionDelJugador.z + numeroRandom);
-
-        GameObject newCustomer = Instantiate(customer, posicion, Quaternion.identity);
+        int i = Random.Range(0, customerPrefabs.Length);
+        GameObject customer = customerPrefabs[i];
+        Vector3 playerPos = Delivery_Bike.control.playerPosition();
+        lastSpawnedWasRight = !lastSpawnedWasRight;
+        float posX = lastSpawnedWasRight ? rightSidewalkGizmo.transform.position.x : leftSidewalkGizmo.transform.position.x;
+        posX += Random.Range(-noise, noise);
+        float posZ = Random.Range(distance.x, distance.y) + playerPos.z;
+        Vector3 pos = new Vector3(posX, -0.75f, posZ);
+        GameObject newCustomer = Instantiate(customer, pos, Quaternion.identity);
+        pendingPackages++;
     }
 }

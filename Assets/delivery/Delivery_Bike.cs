@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BikeMovement : MonoBehaviour
+public class Delivery_Bike : MonoBehaviour
 {
-    public static BikeMovement control;
+    public static Delivery_Bike control;
     Rigidbody rb;
     public GameObject[] wheels;
     public float speed = 20;
@@ -22,6 +22,12 @@ public class BikeMovement : MonoBehaviour
 
     private void Awake() {
         control = this;
+    }
+
+    public void Explode() {
+        speed = 0;
+        rotationSpeed = 0;
+        AS.Stop();
     }
     // Start is called before the first frame update
     void Start()
@@ -50,7 +56,7 @@ public class BikeMovement : MonoBehaviour
         foreach(GameObject wheel in wheels) {
             float rotate = (rotateSpeed * 25 )* speed * Time.deltaTime;
             //Debug.Log(rotate);
-            wheel.transform.Rotate(new Vector3(0, rotate, 0));
+            wheel.transform.Rotate(new Vector3(0, 0, rotate));
         }
     }
 

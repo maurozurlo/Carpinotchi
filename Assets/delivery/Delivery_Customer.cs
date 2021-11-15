@@ -38,7 +38,6 @@ namespace Delivery {
         private void OnTriggerExit(Collider collider) {
             if (isDone) return;
             if (!collider.CompareTag("Player")) return;
-            Debug.Log("Got here exit");
             isReceivingPackage = false;
             secsReceivingPackage = 0;
             Delivery_Manager.control.HideStaySign();

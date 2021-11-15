@@ -21,8 +21,8 @@ public class Delivery_Car : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Player")) return;
-        if (other.GetComponent<BikeMovement>().enabled) {
-            other.GetComponent<BikeMovement>().enabled = false;
+        if (other.GetComponent<Delivery_Bike>().enabled) {
+            other.GetComponent<Delivery_Bike>().Explode();
             isStopped = true;
             AS.PlayOneShot(explosion);
         }

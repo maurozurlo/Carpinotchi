@@ -6,7 +6,6 @@ public class Delivery_Horn : MonoBehaviour
 {
     AudioSource AS;
     public AudioClip hornSound;
-    float hornPitch = 1;
     void Start()
     {
         AS = GetComponent<AudioSource>();
@@ -21,15 +20,5 @@ public class Delivery_Horn : MonoBehaviour
         else {
             AS.Stop();
         }
-    }
-
-    void PlayHorn() {
-        //AS.pitch = hornPitch;
-        //if (Mathf.RoundToInt(hornPitch) < 1.5f) {
-        //    hornPitch += .1f;
-        //}
-        //else {
-        //    hornPitch = 1;
-        //}
     }
 }
