@@ -178,7 +178,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8c460b5191183874ebf04b27ed71f08f, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -266,7 +266,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Alplax
+  m_text: Item
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ccfed6f906b32a4db28f64297960301, type: 2}
   m_sharedMaterial: {fileID: -1035358741702605976, guid: 1ccfed6f906b32a4db28f64297960301,
@@ -336,7 +336,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 93223290}
-    characterCount: 6
+    characterCount: 4
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -477,7 +477,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 20, y: 20}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &222168699
 MonoBehaviour:
@@ -498,7 +498,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Items
+  m_text: Inventario
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ccfed6f906b32a4db28f64297960301, type: 2}
   m_sharedMaterial: {fileID: -1035358741702605976, guid: 1ccfed6f906b32a4db28f64297960301,
@@ -568,7 +568,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 222168699}
-    characterCount: 5
+    characterCount: 10
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -730,6 +730,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 372960e66687af14eb78668b5c1ab04a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hourLength: 1
 --- !u!114 &267344463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1402,7 +1403,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Farlopa
+  m_text: Item
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ccfed6f906b32a4db28f64297960301, type: 2}
   m_sharedMaterial: {fileID: -1035358741702605976, guid: 1ccfed6f906b32a4db28f64297960301,
@@ -1472,7 +1473,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 647149689}
-    characterCount: 7
+    characterCount: 4
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -1804,7 +1805,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enjuague
+  m_text: Item
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ccfed6f906b32a4db28f64297960301, type: 2}
   m_sharedMaterial: {fileID: -1035358741702605976, guid: 1ccfed6f906b32a4db28f64297960301,
@@ -1874,7 +1875,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 851884549}
-    characterCount: 8
+    characterCount: 4
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -2528,8 +2529,8 @@ GameObject:
   - component: {fileID: 1053831241}
   - component: {fileID: 1053831243}
   - component: {fileID: 1053831242}
-  - component: {fileID: 1053831244}
   - component: {fileID: 1053831245}
+  - component: {fileID: 1053831244}
   m_Layer: 5
   m_Name: 1
   m_TagString: Untagged
@@ -2605,25 +2606,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1053831240}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: bc9b71ab5520e774ba59526627aaf600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3975169263681244323}
-          m_MethodName: SetSelectedItem
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1053831240}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  item: {fileID: 0}
+  selectable: 0
 --- !u!114 &1053831245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2857,7 +2844,7 @@ GameObject:
   - component: {fileID: 1121659702}
   - component: {fileID: 1121659701}
   m_Layer: 5
-  m_Name: ItemManagerUI
+  m_Name: InventoryManagerUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2896,13 +2883,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.38431373}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2976,7 +2963,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f0fb9dfb342c18b4bba345e521ac89f0, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3158,8 +3145,8 @@ GameObject:
   - component: {fileID: 1376567677}
   - component: {fileID: 1376567679}
   - component: {fileID: 1376567678}
-  - component: {fileID: 1376567681}
   - component: {fileID: 1376567682}
+  - component: {fileID: 1376567680}
   m_Layer: 5
   m_Name: 0
   m_TagString: Untagged
@@ -3226,7 +3213,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1376567676}
   m_CullTransparentMesh: 0
---- !u!114 &1376567681
+--- !u!114 &1376567680
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3235,25 +3222,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1376567676}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: bc9b71ab5520e774ba59526627aaf600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3975169263681244323}
-          m_MethodName: SetSelectedItem
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1376567676}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  item: {fileID: 0}
+  selectable: 0
 --- !u!114 &1376567682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3325,7 +3298,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: x3
+  m_text: x1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ccfed6f906b32a4db28f64297960301, type: 2}
   m_sharedMaterial: {fileID: -1035358741702605976, guid: 1ccfed6f906b32a4db28f64297960301,
@@ -3646,7 +3619,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Matienzo
+  m_text: Item
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ccfed6f906b32a4db28f64297960301, type: 2}
   m_sharedMaterial: {fileID: -1035358741702605976, guid: 1ccfed6f906b32a4db28f64297960301,
@@ -3716,7 +3689,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1477479369}
-    characterCount: 8
+    characterCount: 4
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -3960,7 +3933,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: x2
+  m_text: x1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ccfed6f906b32a4db28f64297960301, type: 2}
   m_sharedMaterial: {fileID: -1035358741702605976, guid: 1ccfed6f906b32a4db28f64297960301,
@@ -4489,8 +4462,8 @@ GameObject:
   - component: {fileID: 1578414200}
   - component: {fileID: 1578414202}
   - component: {fileID: 1578414201}
-  - component: {fileID: 1578414203}
   - component: {fileID: 1578414204}
+  - component: {fileID: 1578414203}
   m_Layer: 5
   m_Name: 3
   m_TagString: Untagged
@@ -4566,25 +4539,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1578414199}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: bc9b71ab5520e774ba59526627aaf600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3975169263681244323}
-          m_MethodName: SetSelectedItem
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1578414199}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  item: {fileID: 0}
+  selectable: 0
 --- !u!114 &1578414204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4768,8 +4727,8 @@ GameObject:
   - component: {fileID: 1685081189}
   - component: {fileID: 1685081191}
   - component: {fileID: 1685081190}
-  - component: {fileID: 1685081192}
   - component: {fileID: 1685081193}
+  - component: {fileID: 1685081192}
   m_Layer: 5
   m_Name: 2
   m_TagString: Untagged
@@ -4845,25 +4804,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1685081188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: bc9b71ab5520e774ba59526627aaf600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3975169263681244323}
-          m_MethodName: SetSelectedItem
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1685081188}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
+  item: {fileID: 0}
+  selectable: 0
 --- !u!114 &1685081193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5167,7 +5112,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: x99
+  m_text: x1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1ccfed6f906b32a4db28f64297960301, type: 2}
   m_sharedMaterial: {fileID: -1035358741702605976, guid: 1ccfed6f906b32a4db28f64297960301,
@@ -5237,7 +5182,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1841478879}
-    characterCount: 3
+    characterCount: 2
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -5630,7 +5575,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6fc3213b00f760b4e933e6896c2ce50f, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5834,7 +5779,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 24da1054331127a4bbede1aec6d5cd35, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6354,10 +6299,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 35f3badd46cea0048934d6d398f67be6, type: 2}
   - {fileID: 11400000, guid: 2df071b4c1aade141a47da5eecc0ac80, type: 2}
   - {fileID: 11400000, guid: bf22e3c8ddc7e4246b60e3b5df4f54e2, type: 2}
-  AmountList: 63000000030000000100000002000000
   _slot: {fileID: 644016839}
   _image: {fileID: 701396910}
   _text: {fileID: 1087362274}
+  inventorySlots:
+  - {fileID: 1376567676}
+  - {fileID: 1053831240}
+  - {fileID: 1685081188}
+  - {fileID: 1578414199}
   itemName: 
   itemAmount: 0
 --- !u!65 &3975169263681244324

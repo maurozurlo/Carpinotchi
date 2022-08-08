@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DrageableObject : MonoBehaviour
-{
+public class DrageableObject : MonoBehaviour {
     private Vector3 originalPosition;
     private Vector3 screenPoint;
     private Vector3 offset;
@@ -11,20 +10,17 @@ public class DrageableObject : MonoBehaviour
     bool isOverTarget;
     public bool isEmpty = true;
 
-    private void Start()
-    {
+    private void Start() {
         originalPosition = this.transform.position;
     }
-    void OnMouseDown()
-    {
+    void OnMouseDown() {
         if (isEmpty)
             return;
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
     }
 
-    void OnMouseDrag()
-    {
+    void OnMouseDrag() {
         if (isEmpty)
             return;
         Vector3 cursorScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
@@ -32,26 +28,28 @@ public class DrageableObject : MonoBehaviour
         transform.position = cursorPosition;
     }
 
-    private void OnMouseUp()
-    {
+    private void OnMouseUp() {
         if (isEmpty)
             return;
-        if (!isOverTarget)
-        {
+        if (!isOverTarget) {
             transform.position = originalPosition;
             return;
         }
 
         //Estamos arriba del carpincho
         ItemManager.control.ReduceAmountOfItem(item.id);
-        ItemManager.control.RemoveItemUI();
+        
         //Activar
-        if(item is ConsumableItem consumableItem)
-        {
+        if (item is ConsumableItem consumableItem) {
             consumableItem.Consume();
         }
         //Go back to empty?
-        
+
+
+        if(ItemManager.control.GetItemAmount(item.id) == 0) {
+            ItemManager.control.RemoveItemUI();
+        }
+
         //Dull
         VisualManager.control.Dull();
         //Place
@@ -60,22 +58,18 @@ public class DrageableObject : MonoBehaviour
 
 
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("carpincho"))
-        {
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("carpincho")) {
             isOverTarget = true;
             VisualManager.control.Glow();
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("carpincho"))
-        {
+    private void OnTriggerExit(Collider other) {
+        if (other.CompareTag("carpincho")) {
             isOverTarget = false;
             VisualManager.control.Dull();
         }
-            
+
     }
 }

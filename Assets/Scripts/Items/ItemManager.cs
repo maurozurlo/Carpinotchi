@@ -19,9 +19,10 @@ public class ItemManager : MonoBehaviour
 
     public List<Item> itemList = new List<Item>();
 
-    public List<int> AmountList = new List<int>();
+    List<Vector2Int> AmountList = new List<Vector2Int>();
 
     public GameObject _slot, _image, _text;
+    public GameObject[] inventorySlots;
     DrageableObject slot;
     MeshRenderer image;
     TextMeshPro text;
@@ -41,6 +42,17 @@ public class ItemManager : MonoBehaviour
         slot = _slot.GetComponent<DrageableObject>();
         image = _image.GetComponent<MeshRenderer>();
         text = _text.GetComponent<TextMeshPro>();
+
+        //Debug Populate
+        int itemLength = itemList.Count;
+        for (int i = 0; i < itemLength; i++) {
+            AmountList.Add(new Vector2Int(itemList[i].id, 1));
+            if (inventorySlots[i]) {
+                ItemSelect itemSelect = inventorySlots[i].GetComponent<ItemSelect>();
+                itemSelect.item = itemList[i];
+                itemSelect.UpdateVisuals();
+            }
+        }
     }
 
     private void OnMouseDown()
@@ -76,7 +88,8 @@ public class ItemManager : MonoBehaviour
             //Cast
             slot.item = selectedItem;
             slot.isEmpty = false;
-            Texture itemTexture = SpriteToTexture.textureFromSprite(selectedItem.sprite) as Texture;
+            _image.SetActive(true);
+            Texture itemTexture = SpriteToTexture.textureFromSprite(selectedItem.sprite);
             image.material.mainTexture = itemTexture;
         }
         else
@@ -87,6 +100,7 @@ public class ItemManager : MonoBehaviour
     {
         slot.isEmpty = true;
         image.material.mainTexture = null;
+        _image.SetActive(false);
         text.text = "";
     }
 
@@ -101,11 +115,10 @@ public class ItemManager : MonoBehaviour
         gameObject.GetComponent<Outline>().enabled = true;
         lastClicked = gameObject;
 
-        int id = int.Parse(gameObject.name);
-        selectedItem = GetItemBasedOnId(id);
+        selectedItem = gameObject.GetComponent<ItemSelect>().item;
 
         if (selectedItem)
-            Debug.Log($"Amount for selected item {selectedItem.name} is: {AmountList[id]}");
+            Debug.Log($"Amount for selected item {selectedItem.name} is: {GetItemAmount(selectedItem.id)}");
         SetItemDisplay();
     }
 
@@ -121,7 +134,37 @@ public class ItemManager : MonoBehaviour
 
     public void ReduceAmountOfItem(int id)
     {
-        AmountList[id]--;
+        int idx = AmountList.FindIndex((el) => el.x == id);
+        Vector2Int item = AmountList[idx];
+        item.y--;
+        AmountList[idx] = new Vector2Int(item.x, item.y);
+
+        ItemSelect itemSelect = GetItemSlot(item.x);
+        itemSelect.UpdateVisuals();
+
+        if(item.y == 0) {
+            itemSelect.OutOfStock();
+            lastClicked.GetComponent<Outline>().enabled = false;
+        }
+    }
+
+    public ItemSelect GetItemSlot(int id) {
+        foreach(GameObject go in inventorySlots) {
+            ItemSelect itemSelect = go.GetComponent<ItemSelect>();
+            if (itemSelect.item.id == id) {
+                return itemSelect;
+            }
+        }
+        return null;
+    }
+
+    public int GetItemAmount(int id) {
+        Vector2Int item = AmountList.Find((el) => el.x == id);
+        if (item != null) {
+            return item.y;
+        }
+        Debug.LogError("Item not found in GetItemAmount");
+        return 0;
     }
 
     public void Start()
@@ -132,5 +175,6 @@ public class ItemManager : MonoBehaviour
     public void Activate(Item item)
     {
         slot.SendMessage("Activate");
+        Debug.Log(item);
     }
 }
