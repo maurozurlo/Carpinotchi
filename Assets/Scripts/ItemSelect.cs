@@ -55,6 +55,7 @@ public class ItemSelect : MonoBehaviour, IPointerClickHandler {
 
     public void BuyNewUnits() {
         selectable = true;
+        img.color = new Color(1, 1, 1, 1);
     }
 
     public void OnPointerClick(PointerEventData eventData) {

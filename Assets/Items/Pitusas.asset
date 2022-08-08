@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4239fecd3c49c04e9be2c0ba4bfb071, type: 3}
+  m_Name: Pitusas
+  m_EditorClassIdentifier: 
+  name: Pitusas
+  description: "Son unas galletitas que fueron creadas en Argentina muy famosas por
+    los memes que le hacen, pero tambi\xE9n son muy ricas, algunos sabores."
+  id: 4
+  price: 100
+  sprite: {fileID: 21300000, guid: 88a4e87c3b1841a4297695fee5076458, type: 3}
+  sanity: -10
+  hygiene: -2
+  energy: 1
+  hunger: 5

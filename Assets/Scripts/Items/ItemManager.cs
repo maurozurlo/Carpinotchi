@@ -72,8 +72,10 @@ public class ItemManager : MonoBehaviour
     {
         if (isCancel)
         {
-            selectedItem = previouslySelectedItem;
-            SetItemDisplay();
+            if(previouslySelectedItem && GetItemAmount(previouslySelectedItem.id) > 0) {
+                selectedItem = previouslySelectedItem;
+                SetItemDisplay();
+            }
         }
 
         GetComponent<BoxCollider>().enabled = true;
@@ -104,6 +106,8 @@ public class ItemManager : MonoBehaviour
         text.text = "";
     }
 
+
+
     public void SetSelectedItem(GameObject gameObject)
     {
         if (!lastClicked)
@@ -132,20 +136,31 @@ public class ItemManager : MonoBehaviour
         return null;
     }
 
-    public void ReduceAmountOfItem(int id)
-    {
-        int idx = AmountList.FindIndex((el) => el.x == id);
+    int ChangeItemAmount(int itemId, int amount) {
+        int idx = AmountList.FindIndex((el) => el.x == itemId);
         Vector2Int item = AmountList[idx];
-        item.y--;
+        item.y += amount;
         AmountList[idx] = new Vector2Int(item.x, item.y);
+        return item.y;
+    }
 
-        ItemSelect itemSelect = GetItemSlot(item.x);
+
+    public void ReduceAmountOfItem(int itemId)
+    {
+        int rest = ChangeItemAmount(itemId, -1);
+        ItemSelect itemSelect = GetItemSlot(itemId);
         itemSelect.UpdateVisuals();
-
-        if(item.y == 0) {
+        if(rest == 0) {
             itemSelect.OutOfStock();
             lastClicked.GetComponent<Outline>().enabled = false;
         }
+    }
+
+    public void AddItemAmount(int itemId, int selectedItemQty) {
+        ChangeItemAmount(itemId, selectedItemQty);
+        ItemSelect itemSelect = GetItemSlot(itemId);
+        itemSelect.BuyNewUnits();
+        itemSelect.UpdateVisuals();
     }
 
     public ItemSelect GetItemSlot(int id) {
