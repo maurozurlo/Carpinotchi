@@ -12,7 +12,10 @@ public class ShopManager : MonoBehaviour {
 
     public Item selectedItem = null;
     public int selectedItemQty = 1;
-    public GameObject[] buySlots;
+    public GameObject itemShopList;
+    public int itemsPerRow = 5;
+    public float itemSlotSize = 125;
+    public GameObject itemShopSlotPrefab;
     public GameObject buyButton;
 
     private void Awake() {
@@ -29,10 +32,15 @@ public class ShopManager : MonoBehaviour {
     void FillSlots() {
         int itemListCount = itemList.Count;
         for (int i = 0; i < itemListCount; i++) {
-            ItemShopSelect shopSelect = buySlots[i].GetComponent<ItemShopSelect>();
+            GameObject prefab = Instantiate(itemShopSlotPrefab, itemShopList.transform);
+            ItemShopSelect shopSelect = prefab.GetComponent<ItemShopSelect>();
             shopSelect.SetItem(itemList[i]);
             shopSelect.SetOnStock(true);
         }
+        float t = (float)itemListCount / itemsPerRow;
+        float scrollSpace = (Mathf.CeilToInt(t) - 1) * itemSlotSize;
+        RectTransform rect = itemShopList.GetComponent<RectTransform>();
+        RectTransformExtensions.SetBottom(rect, -scrollSpace);
     }
 
     /// Shop Detail    
@@ -77,12 +85,11 @@ public class ShopManager : MonoBehaviour {
 
     public void OpenShopDetailPage(int itemId) {
         selectedItem = itemList.Find((e) => e.id == itemId);
-        Debug.Log(selectedItem);
         OpenModal("detail");
     }
 
     public void BuyItem() {
-        Debug.Log($"Buying {selectedItemQty} of {selectedItem.name}");
+        //Debug.Log($"Buying {selectedItemQty} of {selectedItem.name}");
         MoneyManager.control.SpendMoney(selectedItemQty * selectedItem.price);
         ItemManager.control.AddItemAmount(selectedItem.id, selectedItemQty);
         CloseModal("detail");
