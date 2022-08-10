@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -22,13 +23,19 @@ public class ItemManager : MonoBehaviour
     List<Vector2Int> AmountList = new List<Vector2Int>();
 
     public GameObject _slot, _image, _text;
-    public GameObject[] inventorySlots;
+    
     DrageableObject slot;
     MeshRenderer image;
     TextMeshPro text;
 
     public string itemName;
     public int itemAmount;
+
+
+    public GameObject itemInventoryList;
+    public int itemsPerRow = 5;
+    public float itemSlotSize = 125;
+    public GameObject itemInventorySlotPrefab;
 
     private GameObject lastClicked;
     private void Awake()
@@ -38,33 +45,14 @@ public class ItemManager : MonoBehaviour
         else
             DestroyImmediate(this);
 
-        //Set
+        // FIXME This is not a good place to handle this...
         slot = _slot.GetComponent<DrageableObject>();
         image = _image.GetComponent<MeshRenderer>();
         text = _text.GetComponent<TextMeshPro>();
-
-        //Debug Populate
-        int itemLength = itemList.Count;
-        for (int i = 0; i < itemLength; i++) {
-            AmountList.Add(new Vector2Int(itemList[i].id, 1));
-            if (inventorySlots[i]) {
-                ItemSelect itemSelect = inventorySlots[i].GetComponent<ItemSelect>();
-                itemSelect.item = itemList[i];
-                itemSelect.UpdateVisuals();
-            }
-        }
     }
 
-    private void OnMouseDown()
-    {
-        GetComponent<BoxCollider>().enabled = false;
+    public void OpenModal() {
         previouslySelectedItem = selectedItem;
-        StartCoroutine("openModal");
-    }
-
-    IEnumerator openModal()
-    {
-        yield return new WaitForSeconds(.1f);
         modal.SetActive(true);
     }
 
@@ -77,8 +65,6 @@ public class ItemManager : MonoBehaviour
                 SetItemDisplay();
             }
         }
-
-        GetComponent<BoxCollider>().enabled = true;
         modal.SetActive(false);
     }
 
@@ -121,8 +107,8 @@ public class ItemManager : MonoBehaviour
 
         selectedItem = gameObject.GetComponent<ItemSelect>().item;
 
-        if (selectedItem)
-            Debug.Log($"Amount for selected item {selectedItem.name} is: {GetItemAmount(selectedItem.id)}");
+        //if (selectedItem)
+        //    Debug.Log($"Amount for selected item {selectedItem.name} is: {GetItemAmount(selectedItem.id)}");
         SetItemDisplay();
     }
 
@@ -156,15 +142,36 @@ public class ItemManager : MonoBehaviour
         }
     }
 
-    public void AddItemAmount(int itemId, int selectedItemQty) {
-        ChangeItemAmount(itemId, selectedItemQty);
-        ItemSelect itemSelect = GetItemSlot(itemId);
-        itemSelect.BuyNewUnits();
+    public void AddItemAmount(Item item, int selectedItemQty) {
+        // If item already exists, add more units
+        Debug.Log(itemList.Count);
+        if (itemList.Count != 0 && itemList.Find((e) => e.id == item.id) != null) {
+            ChangeItemAmount(item.id, selectedItemQty);
+            ItemSelect _itemSelect = GetItemSlot(item.id);
+            _itemSelect.AddedNewUnits();
+            _itemSelect.UpdateVisuals();
+            return;
+        }
+        // If item doesn't exist, add it to both container and amount list
+        itemList.Add(item);
+        AmountList.Add(new Vector2Int(item.id, selectedItemQty));
+
+        int itemListCount = itemList.Count;
+        GameObject prefab = Instantiate(itemInventorySlotPrefab, itemInventoryList.transform);
+        ItemSelect itemSelect = prefab.GetComponent<ItemSelect>();
+        itemSelect.item = item;
+        itemSelect.selectable = true;
+        itemSelect.AddedNewUnits();
         itemSelect.UpdateVisuals();
+        // Update scrollable List UI
+        float t = (float)itemListCount / itemsPerRow;
+        float scrollSpace = (Mathf.CeilToInt(t) - 1) * itemSlotSize;
+        RectTransform rect = itemInventoryList.GetComponent<RectTransform>();
+        RectTransformExtensions.SetBottom(rect, -scrollSpace);
     }
 
     public ItemSelect GetItemSlot(int id) {
-        foreach(GameObject go in inventorySlots) {
+        foreach(GameObject go in itemInventoryList.transform) {
             ItemSelect itemSelect = go.GetComponent<ItemSelect>();
             if (itemSelect.item.id == id) {
                 return itemSelect;

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4239fecd3c49c04e9be2c0ba4bfb071, type: 3}
   m_Name: Papitas
   m_EditorClassIdentifier: 
-  name: Pitusas
+  name: Papitas
   description: "Riqu\xEDsimas y adictivas. Van en cualquier picada con untables,
     dips o solas."
   id: 5

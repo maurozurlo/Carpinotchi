@@ -10,16 +10,11 @@ public class ItemSelect : MonoBehaviour, IPointerClickHandler {
     Image img;
     TMP_Text title, amount;
     public bool selectable;
-    bool initialized = false;
+    bool isInitialized;
+    
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    private void OnEnable() {
-        if (initialized) return;
-
+    void OnEnable() {
+        if (isInitialized) return;
         Transform t = transform;
         // Image
         img = t.Find("Image").GetComponent<Image>();
@@ -28,24 +23,16 @@ public class ItemSelect : MonoBehaviour, IPointerClickHandler {
         // Amount
         amount = t.Find("Amount").GetComponent<TMP_Text>();
         if (item) selectable = true;
-        initialized = true;
+        isInitialized = true;
         UpdateVisuals();
     }
 
     public void UpdateVisuals() {
-        if (!initialized) return;
-        if (item) {
-            img.sprite = item.sprite;
-            title.text = item.name;
-            amount.text = $"x{ItemManager.control.GetItemAmount(item.id)}";
-            selectable = true;
-        }
-        else {
-            img.sprite = null;
-            title.text = "None";
-            amount.text = "";
-            selectable = false;
-        }
+        if (!isInitialized) return;
+        img.sprite = item.sprite;
+        title.text = item.name;
+        amount.text = $"x{ItemManager.control.GetItemAmount(item.id)}";
+        selectable = true;
     }
 
     public void OutOfStock() {
@@ -53,7 +40,8 @@ public class ItemSelect : MonoBehaviour, IPointerClickHandler {
         img.color = new Color(1, 1, 1, .3f);
     }
 
-    public void BuyNewUnits() {
+    public void AddedNewUnits() {
+        if (!isInitialized) return;
         selectable = true;
         img.color = new Color(1, 1, 1, 1);
     }

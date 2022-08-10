@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class ShopManager : MonoBehaviour {
     public static ShopManager control;
     public GameObject shopListModal;
 
-    public List<Item> itemList = new List<Item>();
+    List<Item> itemList = new List<Item>();
 
     public Item selectedItem = null;
     public int selectedItemQty = 1;
@@ -30,6 +31,9 @@ public class ShopManager : MonoBehaviour {
     }
     /// Shop List
     void FillSlots() {
+        Item[] consumables = Resources.LoadAll<Item>("Consumables");
+        itemList = consumables.ToList();
+
         int itemListCount = itemList.Count;
         for (int i = 0; i < itemListCount; i++) {
             GameObject prefab = Instantiate(itemShopSlotPrefab, itemShopList.transform);
@@ -91,7 +95,7 @@ public class ShopManager : MonoBehaviour {
     public void BuyItem() {
         //Debug.Log($"Buying {selectedItemQty} of {selectedItem.name}");
         MoneyManager.control.SpendMoney(selectedItemQty * selectedItem.price);
-        ItemManager.control.AddItemAmount(selectedItem.id, selectedItemQty);
+        ItemManager.control.AddItemAmount(selectedItem, selectedItemQty);
         CloseModal("detail");
     }
 

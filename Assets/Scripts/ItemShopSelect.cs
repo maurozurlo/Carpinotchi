@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class ItemShopSelect : MonoBehaviour, IPointerClickHandler {
 
     private Item item;
-    public bool onStock;
+    public bool inStock;
     
 
     public void SetItem(Item item) { 
@@ -14,11 +14,11 @@ public class ItemShopSelect : MonoBehaviour, IPointerClickHandler {
         GetComponent<UnityEngine.UI.Image>().sprite = item.sprite;
     }
 
-    public void SetOnStock(bool onStock) { this.onStock = onStock; }
+    public void SetOnStock(bool inStock) { this.inStock = inStock; }
 
 
     public void OnPointerClick(PointerEventData eventData) {
-        if(onStock && item) {
+        if(inStock && item) {
             ShopManager.control.OpenShopDetailPage(item.id);
         }
     }
