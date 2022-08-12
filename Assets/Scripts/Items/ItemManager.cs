@@ -136,15 +136,20 @@ public class ItemManager : MonoBehaviour
         int rest = ChangeItemAmount(itemId, -1);
         ItemSelect itemSelect = GetItemSlot(itemId);
         itemSelect.UpdateVisuals();
-        if(rest == 0) {
-            itemSelect.OutOfStock();
-            lastClicked.GetComponent<Outline>().enabled = false;
+
+        if (rest == 0) {
+            int itemAmountListIndex = AmountList.FindIndex(e => e.x == itemId);
+            AmountList.RemoveAt(itemAmountListIndex);
+            Destroy(lastClicked.gameObject);
+
+            int itemListIndex = itemList.FindIndex(e => e.id == itemId);
+            itemList.RemoveAt(itemListIndex);
+            UpdateScrollableListUI();
         }
     }
 
     public void AddItemAmount(Item item, int selectedItemQty) {
         // If item already exists, add more units
-        Debug.Log(itemList.Count);
         if (itemList.Count != 0 && itemList.Find((e) => e.id == item.id) != null) {
             ChangeItemAmount(item.id, selectedItemQty);
             ItemSelect _itemSelect = GetItemSlot(item.id);
@@ -164,15 +169,12 @@ public class ItemManager : MonoBehaviour
         itemSelect.AddedNewUnits();
         itemSelect.UpdateVisuals();
         // Update scrollable List UI
-        float t = (float)itemListCount / itemsPerRow;
-        float scrollSpace = (Mathf.CeilToInt(t) - 1) * itemSlotSize;
-        RectTransform rect = itemInventoryList.GetComponent<RectTransform>();
-        RectTransformExtensions.SetBottom(rect, -scrollSpace);
+        UpdateScrollableListUI();
     }
 
     public ItemSelect GetItemSlot(int id) {
-        foreach(GameObject go in itemInventoryList.transform) {
-            ItemSelect itemSelect = go.GetComponent<ItemSelect>();
+        foreach (Transform t in itemInventoryList.transform) {
+            ItemSelect itemSelect = t.GetComponent<ItemSelect>();
             if (itemSelect.item.id == id) {
                 return itemSelect;
             }
@@ -198,5 +200,12 @@ public class ItemManager : MonoBehaviour
     {
         slot.SendMessage("Activate");
         Debug.Log(item);
+    }
+
+    void UpdateScrollableListUI() {
+        float t = (float)itemList.Count / itemsPerRow;
+        float scrollSpace = (Mathf.CeilToInt(t) - 1) * itemSlotSize;
+        RectTransform rect = itemInventoryList.GetComponent<RectTransform>();
+        RectTransformExtensions.SetBottom(rect, -scrollSpace);
     }
 }

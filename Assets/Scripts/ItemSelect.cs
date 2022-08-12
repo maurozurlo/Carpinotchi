@@ -47,7 +47,6 @@ public class ItemSelect : MonoBehaviour, IPointerClickHandler {
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        Debug.Log(selectable);
         if (!selectable) return;
         ItemManager.control.SetSelectedItem(gameObject);
     }
