@@ -51,7 +51,7 @@ namespace Delivery {
         }
 
         public void Kill() {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 

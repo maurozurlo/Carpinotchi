@@ -25,10 +25,9 @@ public class Delivery_Manager : MonoBehaviour
 
     // Customers
     public GameObject[] customerPrefabs;
-    public GameObject rightSidewalkGizmo, leftSidewalkGizmo;
+    public GameObject leftSidewalkGizmo;
     public Vector2 distance = new Vector2(50, 100);
     public float noise;
-    bool lastSpawnedWasRight;
 
     //Audio
     AudioSource AS;
@@ -65,7 +64,7 @@ public class Delivery_Manager : MonoBehaviour
         packagesDelivered += amount;
         StartCoroutine(HideSignAfterSeconds(AC_Pickup.length));
 
-        int howManyToSpawn = Mathf.RoundToInt(packagesDelivered * .3f) >= 1 ? Mathf.RoundToInt(packagesDelivered * .3f) : 1;
+        int howManyToSpawn = Mathf.Clamp(Mathf.RoundToInt(packagesDelivered * .3f) >= 1 ? Mathf.RoundToInt(packagesDelivered * .3f) : 1, 0, 4);
         for (int i = 0; i < howManyToSpawn; i++) {
             SpawnCustomer();
         }
@@ -90,12 +89,7 @@ public class Delivery_Manager : MonoBehaviour
 
     public void ShowStaySign(int seconds) {
         UI_Stay.text = $"No te muevas por {seconds} segundos!";
-        float pitch = 1;
-        switch (seconds){
-            case 1: pitch = 1.3f;break;
-            case 2: pitch = 1.1f; break;
-            case 3: pitch = 1f; break;
-        }
+        float pitch = 1.43f - (.15f * seconds);
         AS.pitch = pitch;
         AS.PlayOneShot(AC_Stay);
     }
@@ -114,8 +108,7 @@ public class Delivery_Manager : MonoBehaviour
         int i = Random.Range(0, customerPrefabs.Length);
         GameObject customer = customerPrefabs[i];
         Vector3 playerPos = Delivery_Bike.control.playerPosition();
-        lastSpawnedWasRight = !lastSpawnedWasRight;
-        float posX = lastSpawnedWasRight ? rightSidewalkGizmo.transform.position.x : leftSidewalkGizmo.transform.position.x;
+        float posX = leftSidewalkGizmo.transform.position.x;
         posX += Random.Range(-noise, noise);
         float posZ = Random.Range(distance.x, distance.y) + playerPos.z;
         Vector3 pos = new Vector3(posX, -0.75f, posZ);

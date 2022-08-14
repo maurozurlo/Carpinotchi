@@ -13,6 +13,11 @@ public class Delivery_Bike : MonoBehaviour
     Vector3 NewPos;
     Vector3 ObjVelocity;
 
+
+    public GameObject turningWheel;
+    Vector3 turningWheelPrevRot;
+    public Vector2 rotationClamp;
+
     // Audio
     AudioSource AS;
     public AudioClip bikeStart, bikeLoop, bikeStop;
@@ -37,12 +42,16 @@ public class Delivery_Bike : MonoBehaviour
         PrevPos = transform.position;
         NewPos = transform.position;
         AS = GetComponent<AudioSource>();
+        turningWheelPrevRot = turningWheel.transform.rotation.eulerAngles;
     }
 
     void Update()
     {
-        float translation = Input.GetAxis("Vertical") * speed;
+        float translation = GetPressure(Mathf.Clamp(Input.GetAxis("Vertical"), 0, 1)) * speed;
         float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
+
+        
+        //turningWheel.transform.rotation = Quaternion.Euler(new Vector3(turningWheelPrevRot.x, calcRotation(rotation), turningWheelPrevRot.z));
         translation *= Time.deltaTime;
         rotation *= Time.deltaTime;
         transform.Translate(0, 0, translation);
@@ -50,6 +59,20 @@ public class Delivery_Bike : MonoBehaviour
         MoveWheels(translation);
 
         PlayAudio(translation);
+    }
+
+    float GetPressure(float value) {
+        return 1 - (value * 1);
+    }
+
+    float calcRotation(float keypress) {
+        float val = 90;
+        
+        if (keypress > .1f) val = Mathf.Lerp(rotationClamp.y, 90, keypress);
+        if (keypress < .1f) val = Mathf.Lerp(rotationClamp.x, 90, keypress);
+        if (keypress == 0) val = 90;
+
+        return Mathf.Clamp(val, rotationClamp.x, rotationClamp.y);
     }
 
     void MoveWheels(float rotateSpeed) {

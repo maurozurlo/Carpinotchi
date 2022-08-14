@@ -5,10 +5,12 @@ using UnityEngine;
 public class Delivery_Car : MonoBehaviour
 {
 
-    public float speed = 35;
+    public Vector3 speed = new Vector3(35, 0 ,0);
     AudioSource AS;
     public AudioClip explosion;
     bool isStopped;
+
+    public Vector3 mapBounds = new Vector3(60, 0, 0);
 
     private void Start() {
         AS = GetComponent<AudioSource>();
@@ -16,7 +18,11 @@ public class Delivery_Car : MonoBehaviour
     void Update()
     {
         if (isStopped) return;
-        transform.Translate(0, 0, speed * Time.deltaTime);
+        transform.Translate(speed.x * Time.deltaTime, speed.y * Time.deltaTime, speed.z * Time.deltaTime, Space.World);
+
+
+        if (transform.position.x < -mapBounds.x) Destroy(gameObject);
+        if (transform.position.x > mapBounds.x) Destroy(gameObject);
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -25,6 +31,7 @@ public class Delivery_Car : MonoBehaviour
             other.GetComponent<Delivery_Bike>().Explode();
             isStopped = true;
             AS.PlayOneShot(explosion);
+            GetComponentInParent<Delivery_CarSpawner>().crashHasOccurred();
         }
     }
 }
