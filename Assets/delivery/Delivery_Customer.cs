@@ -11,6 +11,11 @@ namespace Delivery {
         int secsReceivingPackage;
         public int staySeconds = 3;
         bool isDone;
+        Animator animator;
+
+        private void Awake() {
+            animator = GetComponentInChildren<Animator>();
+        }
 
         private void OnTriggerEnter(Collider collider) {
             // Check if tag == player
@@ -46,8 +51,9 @@ namespace Delivery {
 
         void Done() {
             isDone = true;
+            animator.SetTrigger("Cheer");
             Delivery_Manager.control.AddToPackagesDelivered(points);
-            Kill();
+            //Kill();
         }
 
         public void Kill() {

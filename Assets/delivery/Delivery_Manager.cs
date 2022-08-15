@@ -112,7 +112,7 @@ public class Delivery_Manager : MonoBehaviour
         posX += Random.Range(-noise, noise);
         float posZ = Random.Range(distance.x, distance.y) + playerPos.z;
         Vector3 pos = new Vector3(posX, -0.75f, posZ);
-        GameObject newCustomer = Instantiate(customer, pos, Quaternion.identity);
+        GameObject newCustomer = Instantiate(customer, pos, Quaternion.Euler(new Vector3(0,90,0)));
         pendingPackages++;
     }
 }
