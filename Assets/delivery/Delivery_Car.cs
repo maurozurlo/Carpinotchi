@@ -10,10 +10,21 @@ public class Delivery_Car : MonoBehaviour
     public AudioClip explosion;
     bool isStopped;
 
+    public GameObject wheels1, wheels2;
+    public float wheelSpinSpeed = 30;
+
+    public GameObject chassis;
+
+    public Material[] materials;
+
     public Vector3 mapBounds = new Vector3(60, 0, 0);
 
     private void Start() {
         AS = GetComponent<AudioSource>();
+
+        // Set random material
+        int i = Random.Range(0, materials.Length);
+        chassis.GetComponent<MeshRenderer>().material = materials[i];
     }
     void Update()
     {
@@ -23,6 +34,10 @@ public class Delivery_Car : MonoBehaviour
 
         if (transform.position.x < -mapBounds.x) Destroy(gameObject);
         if (transform.position.x > mapBounds.x) Destroy(gameObject);
+
+        float spin = wheelSpinSpeed * Time.deltaTime;
+        wheels1.transform.Rotate(new Vector3(spin, 0, 0));
+        wheels2.transform.Rotate(new Vector3(spin, 0, 0));
     }
 
     private void OnTriggerEnter(Collider other) {

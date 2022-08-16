@@ -14,7 +14,7 @@ public class Delivery_Manager : MonoBehaviour
     public GameState gameState = GameState.Start;
 
     public static Delivery_Manager control;
-    public TextMeshProUGUI UI_Packages;
+    public TextMeshProUGUI UI_Money;
     public TextMeshProUGUI UI_Time;
     public TextMeshProUGUI UI_PendingPackages;
     //Stay
@@ -36,6 +36,7 @@ public class Delivery_Manager : MonoBehaviour
     public float timeLeft;
 
     int packagesDelivered = 0;
+    int moneyEarned = 0;
     int pendingPackages = 1;
     
     private void Awake() {
@@ -73,13 +74,13 @@ public class Delivery_Manager : MonoBehaviour
     }
 
     void UpdateUI() {
-        UI_Packages.text = $"Paquetes entregados: {packagesDelivered}";
-        UI_PendingPackages.text = $"Pendientes: {pendingPackages}";
+        UI_Money.text = $"${moneyEarned}";
+        UI_PendingPackages.text = $"{pendingPackages}";
     }
 
     void UpdateTimeUI() {
         System.TimeSpan time = System.TimeSpan.FromSeconds(timeLeft);
-        UI_Time.text = $"Tiempo restante: {time:hh':'mm':'ss}";
+        UI_Time.text = $"{time:'mm':'ss}";
     }
 
     public void ShowPickupSign(int points) {
