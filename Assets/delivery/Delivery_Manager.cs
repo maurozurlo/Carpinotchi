@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using System;
 
 public class Delivery_Manager : MonoBehaviour
 {
@@ -79,8 +80,12 @@ public class Delivery_Manager : MonoBehaviour
     }
 
     void UpdateTimeUI() {
-        System.TimeSpan time = System.TimeSpan.FromSeconds(timeLeft);
-        UI_Time.text = $"{time:'mm':'ss}";
+        String _time = FormatTimeSpan(TimeSpan.FromSeconds(timeLeft));
+        UI_Time.text = _time;
+    }
+
+    private string FormatTimeSpan(TimeSpan time) {
+        return ((time < TimeSpan.Zero) ? "-" : "") + time.ToString(@"mm\:ss");
     }
 
     public void ShowPickupSign(int points) {
@@ -106,12 +111,12 @@ public class Delivery_Manager : MonoBehaviour
 
 
     void SpawnCustomer() {
-        int i = Random.Range(0, customerPrefabs.Length);
+        int i = UnityEngine.Random.Range(0, customerPrefabs.Length);
         GameObject customer = customerPrefabs[i];
         Vector3 playerPos = Delivery_Bike.control.playerPosition();
         float posX = leftSidewalkGizmo.transform.position.x;
-        posX += Random.Range(-noise, noise);
-        float posZ = Random.Range(distance.x, distance.y) + playerPos.z;
+        posX += UnityEngine.Random.Range(-noise, noise);
+        float posZ = UnityEngine.Random.Range(distance.x, distance.y) + playerPos.z;
         Vector3 pos = new Vector3(posX, -0.75f, posZ);
         GameObject newCustomer = Instantiate(customer, pos, Quaternion.Euler(new Vector3(0,90,0)));
         pendingPackages++;

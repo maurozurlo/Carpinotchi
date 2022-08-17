@@ -7,12 +7,7 @@ public class Delivery_CarSpawner : MonoBehaviour
     public GameObject carPrefab;
     public GameObject leftLane, rightLane;
     public float minSpawnTime = .25f;
-    bool canSpawn = true;
-
-    void Start()
-    {
-        StartCoroutine("SpawnCar");
-    }
+    bool canSpawn;
 
     IEnumerator SpawnCar() {
         if (!canSpawn) yield break;
@@ -31,6 +26,21 @@ public class Delivery_CarSpawner : MonoBehaviour
 
     public void crashHasOccurred() {
         canSpawn = false;
+    }
+
+
+    public void StartSpawning() {
+        canSpawn = true;
+        StartCoroutine("SpawnCar");
+    }
+
+    public void StopSpawning() {
+        canSpawn = false;
+    }
+
+    public void MoveLanes(Vector3 distance) {
+        leftLane.transform.position += distance;
+        rightLane.transform.position += distance;
     }
 
 
