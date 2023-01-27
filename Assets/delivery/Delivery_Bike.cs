@@ -6,6 +6,8 @@ public class Delivery_Bike : MonoBehaviour
 {
     public static Delivery_Bike control;
     Rigidbody rb;
+    public float crashSpeed = 850;
+
     public GameObject[] wheels;
     public float speed = 20;
     public float rotationSpeed = 20;
@@ -30,9 +32,19 @@ public class Delivery_Bike : MonoBehaviour
     }
 
     public void Explode() {
+        Camera.main.GetComponent<SmoothFollow>().enabled = false;
+        CameraShake cs = Camera.main.GetComponent<CameraShake>();
+        cs.Shake(3, 10);
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, Random.Range(0, 360), transform.eulerAngles.z);
+        rb.isKinematic = false;
+        Vector3 force = transform.forward;
+        force = new Vector3(force.x, 1, force.z);
+        rb.AddForce(force * crashSpeed);
+
         speed = 0;
         rotationSpeed = 0;
         AS.Stop();
+        Delivery_Manager.control.GameOver();
     }
     // Start is called before the first frame update
     void Start()
@@ -48,14 +60,14 @@ public class Delivery_Bike : MonoBehaviour
     void Update()
     {
         float translation = GetPressure(Mathf.Clamp(Input.GetAxis("Vertical"), 0, 1)) * speed;
-        float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
+        //float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
 
         
         //turningWheel.transform.rotation = Quaternion.Euler(new Vector3(turningWheelPrevRot.x, calcRotation(rotation), turningWheelPrevRot.z));
         translation *= Time.deltaTime;
-        rotation *= Time.deltaTime;
+        //rotation *= Time.deltaTime;
         transform.Translate(0, 0, translation);
-        transform.Rotate(0, rotation, 0);
+        //transform.Rotate(0, rotation, 0);
         MoveWheels(translation);
 
         PlayAudio(translation);
