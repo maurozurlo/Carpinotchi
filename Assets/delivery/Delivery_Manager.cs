@@ -18,11 +18,16 @@ public class Delivery_Manager : MonoBehaviour
     public TextMeshProUGUI UI_Money;
     public TextMeshProUGUI UI_Time;
     public TextMeshProUGUI UI_PackagesDelivered;
-    //Stay
+    public GameObject UI_GameOver;
+    public TextMeshProUGUI UI_GameOverText;
+    //Sign
     public TextMeshProUGUI UI_Messager;
     public AudioClip AC_Stay;
     // Pickup
     public AudioClip AC_Pickup;
+
+    // StopLight
+    public Delivery_Streetlight stopLight;
 
     // Customers
     public GameObject[] customerPrefabs;
@@ -34,7 +39,10 @@ public class Delivery_Manager : MonoBehaviour
     AudioSource AS;
 
     // Time
-    public float timeLeft;
+    public int initialSeconds = 10;
+    public int maxPackages = 20;
+    public float timeLeft = 10;
+    public float secondsPerPackage = 0.5f;
     public int timeToStartGame = 3;
 
     // Score
@@ -64,19 +72,32 @@ public class Delivery_Manager : MonoBehaviour
         gameState = GameState.Ended;
         player.enabled = false;
         timeLeft = 0;
-        
-        UI_Messager.text = $"Fin del juego!!\nConseguiste ${moneyEarned}.";
+        stopLight.Cleanup();
+
+        UI_GameOver.SetActive(true);
+        UI_GameOverText.text = $"Conseguiste ${moneyEarned}";
+        HideSign();
 
     }
 
     public void AddToPackagesDelivered(int amount) {
-        timeLeft += amount * 10;
+        float remainingSeconds = Mathf.Clamp(Mathf.CeilToInt(initialSeconds - (secondsPerPackage * Mathf.Min(packagesDelivered, maxPackages))), 2, 10);
+        timeLeft += remainingSeconds;
         packagesDelivered += amount;
         int moneyToEarn = Mathf.CeilToInt(Mathf.Log(10) * packagesDelivered);
         moneyEarned += moneyToEarn;
         StartCoroutine(HideSignAfterSeconds(AC_Pickup.length));
-        int howManyToSpawn = Mathf.Clamp(Mathf.CeilToInt((Mathf.Log(4) * packagesDelivered) - packagesDelivered), 1, 4);
-        for (int i = 0; i < howManyToSpawn; i++) {
+
+        int random = UnityEngine.Random.Range(0, 1);
+        int howManyToSpawn = random > .95f ? 2 : 1;
+
+        if (howManyToSpawn == 1)
+        {
+            SpawnCustomer();
+        }
+        else
+        {
+            SpawnCustomer();
             SpawnCustomer();
         }
         UpdateUI();

@@ -66,7 +66,7 @@ public class Delivery_Streetlight : MonoBehaviour {
         }
     }
 
-    void Cleanup() {
+    public void Cleanup() {
         transform.position += distanceToNextCrossing;
         carSpawner.MoveLanes(distanceToNextCrossing);
         UI_base.SetActive(false);
