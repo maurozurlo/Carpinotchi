@@ -25,6 +25,8 @@ public class Delivery_Bike : MonoBehaviour
     public AudioClip bikeStart, bikeLoop, bikeStop;
     Queue<AudioClip> clipQueue = new Queue<AudioClip>();
 
+    public int val = 100;
+
 
 
     private void Awake() {
@@ -34,7 +36,7 @@ public class Delivery_Bike : MonoBehaviour
     public void Explode() {
         Camera.main.GetComponent<SmoothFollow>().enabled = false;
         CameraShake cs = Camera.main.GetComponent<CameraShake>();
-        cs.Shake(3, 10);
+        StartCoroutine(cs.Shake(3, 0.25f));
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, Random.Range(0, 360), transform.eulerAngles.z);
         rb.isKinematic = false;
         Vector3 force = transform.forward;

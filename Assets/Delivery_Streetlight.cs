@@ -29,12 +29,18 @@ public class Delivery_Streetlight : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Player")) return;
-
         currWaitingTime = Random.Range(waitingTime.x, waitingTime.y);
         StartCoroutine(SetupStreetlight(color.red));
+        Delivery_Manager.control.MoveSpawnArea();
     }
 
-    IEnumerator SetupStreetlight(color color) {
+	private void OnTriggerExit(Collider other)
+	{
+        if (!other.CompareTag("Player")) return;
+
+    }
+
+	IEnumerator SetupStreetlight(color color) {
         // Start carSpawner
         switch (color) {
             case color.red:

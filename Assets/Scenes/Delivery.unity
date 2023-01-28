@@ -1515,6 +1515,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1420724561924216716, guid: 2efd527bf3256994cb5242e40598801e,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 9.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1420724561924216716, guid: 2efd527bf3256994cb5242e40598801e,
+        type: 3}
+      propertyPath: m_Size.z
+      value: 22.15
+      objectReference: {fileID: 0}
     - target: {fileID: 1420724561924216719, guid: 2efd527bf3256994cb5242e40598801e,
         type: 3}
       propertyPath: m_RootOrder
@@ -1523,7 +1533,7 @@ PrefabInstance:
     - target: {fileID: 1420724561924216719, guid: 2efd527bf3256994cb5242e40598801e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.65
+      value: -12.6
       objectReference: {fileID: 0}
     - target: {fileID: 1420724561924216719, guid: 2efd527bf3256994cb5242e40598801e,
         type: 3}
@@ -1533,7 +1543,7 @@ PrefabInstance:
     - target: {fileID: 1420724561924216719, guid: 2efd527bf3256994cb5242e40598801e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 37.208538
+      value: 83.8
       objectReference: {fileID: 0}
     - target: {fileID: 1420724561924216719, guid: 2efd527bf3256994cb5242e40598801e,
         type: 3}
@@ -1575,10 +1585,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Customer
       objectReference: {fileID: 0}
+    - target: {fileID: 1420724561924216722, guid: 2efd527bf3256994cb5242e40598801e,
+        type: 3}
+      propertyPath: m_TagString
+      value: Target
+      objectReference: {fileID: 0}
     - target: {fileID: 1420724561924216723, guid: 2efd527bf3256994cb5242e40598801e,
         type: 3}
       propertyPath: walkDistance
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2653487594581305531, guid: 2efd527bf3256994cb5242e40598801e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2efd527bf3256994cb5242e40598801e, type: 3}
@@ -2650,99 +2670,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1095290531}
   m_CullTransparentMesh: 0
---- !u!1 &1098864403
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1098864407}
-  - component: {fileID: 1098864406}
-  - component: {fileID: 1098864405}
-  - component: {fileID: 1098864404}
-  m_Layer: 0
-  m_Name: SpawnZone
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!65 &1098864404
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1098864403}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &1098864405
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1098864403}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!33 &1098864406
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1098864403}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &1098864407
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1098864403}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15.873, y: 4, z: 199.93}
-  m_LocalScale: {x: 8.854418, y: 11.949973, z: 173.60898}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 17
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1164730113
 GameObject:
   m_ObjectHideFlags: 0
@@ -4128,6 +4055,8 @@ GameObject:
   - component: {fileID: 1680857215}
   - component: {fileID: 1680857214}
   - component: {fileID: 1680857219}
+  - component: {fileID: 1680857217}
+  - component: {fileID: 1680857216}
   m_Layer: 0
   m_Name: StopLight
   m_TagString: Untagged
@@ -4167,6 +4096,53 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &1680857216
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680857213}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &1680857217
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680857213}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 2f0b5bc5dca7fca409dd9b564831b8f9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
 --- !u!4 &1680857218
 Transform:
   m_ObjectHideFlags: 0
@@ -4175,8 +4151,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1680857213}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.968, y: 0.8, z: 83}
-  m_LocalScale: {x: 22.943623, y: 6.01, z: 8.116661}
+  m_LocalPosition: {x: -0.968, y: 0.8, z: 91.04}
+  m_LocalScale: {x: 22.943645, y: 6.0099983, z: 33.874645}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 16
@@ -5093,12 +5069,16 @@ MonoBehaviour:
   AC_Stay: {fileID: 8300000, guid: 381b0d75f58b9d242813e701fcd5a7fd, type: 3}
   AC_Pickup: {fileID: 8300000, guid: f815027180b01e241b30b268fdfb8ea4, type: 3}
   stopLight: {fileID: 1680857214}
+  spawnTime: 0.5
   customerPrefabs:
   - {fileID: 1420724561924216722, guid: 2efd527bf3256994cb5242e40598801e, type: 3}
-  leftSidewalkGizmo: {fileID: 579433035}
-  distance: {x: 50, y: 100}
+  customerSpawnArea: {fileID: 0}
+  distance: {x: 10, y: 50}
   noise: 0.3
-  initialSeconds: 10
+  maxActiveCustomers: 4
+  streetNumber: 0
+  distanceToNextCrossing: {x: 0, y: 0, z: 200}
+  initialSeconds: 15
   maxPackages: 10
   timeLeft: 10
   secondsPerPackage: 0.5
@@ -5377,13 +5357,14 @@ MonoBehaviour:
   wheels:
   - {fileID: 5135679592426301654}
   - {fileID: 6174171253693885568}
-  speed: 25
+  speed: 20
   rotationSpeed: 10
   turningWheel: {fileID: 5135679592426301654}
   rotationClamp: {x: 42, y: 112}
   bikeStart: {fileID: 8300000, guid: 039bd747722069745946660ffed0f8c8, type: 3}
   bikeLoop: {fileID: 8300000, guid: c99e31a1ba791ae45a04eed5e5fd8308, type: 3}
   bikeStop: {fileID: 8300000, guid: 07ab00e01a1a2a248948bbc3f2323d72, type: 3}
+  val: 100
 --- !u!54 &2051934286
 Rigidbody:
   m_ObjectHideFlags: 0

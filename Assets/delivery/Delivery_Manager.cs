@@ -1,8 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using System;
 
 public class Delivery_Manager : MonoBehaviour
 {
@@ -30,10 +28,16 @@ public class Delivery_Manager : MonoBehaviour
     public Delivery_Streetlight stopLight;
 
     // Customers
+    [Header("Customers")]
+    public float spawnTime = 2;
     public GameObject[] customerPrefabs;
-    public GameObject leftSidewalkGizmo;
+    public GameObject customerSpawnArea;
     public Vector2 distance = new Vector2(50, 100);
     public float noise;
+    public int maxActiveCustomers = 5;
+    // TODO: Make this private after test;
+    public int streetNumber = 0;
+    public Vector3 distanceToNextCrossing;
 
     //Audio
     AudioSource AS;
@@ -62,7 +66,7 @@ public class Delivery_Manager : MonoBehaviour
         if(gameState == GameState.Playing) {
             timeLeft -= Time.deltaTime;
             UpdateTimeUI();
-            if ((int)Math.Floor(timeLeft) == 0) {
+            if ((int)Mathf.Floor(timeLeft) == 0) {
                 GameOver();
             }
         }
@@ -70,6 +74,7 @@ public class Delivery_Manager : MonoBehaviour
 
     public void GameOver() {
         gameState = GameState.Ended;
+        StopAllCoroutines();
         player.enabled = false;
         timeLeft = 0;
         stopLight.Cleanup();
@@ -81,27 +86,17 @@ public class Delivery_Manager : MonoBehaviour
     }
 
     public void AddToPackagesDelivered(int amount) {
+        
         float remainingSeconds = Mathf.Clamp(Mathf.CeilToInt(initialSeconds - (secondsPerPackage * Mathf.Min(packagesDelivered, maxPackages))), 2, 10);
         timeLeft += remainingSeconds;
         packagesDelivered += amount;
         int moneyToEarn = Mathf.CeilToInt(Mathf.Log(10) * packagesDelivered);
         moneyEarned += moneyToEarn;
         StartCoroutine(HideSignAfterSeconds(AC_Pickup.length));
-
-        int random = UnityEngine.Random.Range(0, 1);
-        int howManyToSpawn = random > .95f ? 2 : 1;
-
-        if (howManyToSpawn == 1)
-        {
-            SpawnCustomer();
-        }
-        else
-        {
-            SpawnCustomer();
-            SpawnCustomer();
-        }
         UpdateUI();
         ShowPickupSign(moneyToEarn);
+
+        StartCoroutine("WaitAndSpawnCustomer");
     }
 
     void UpdateUI() {
@@ -110,12 +105,12 @@ public class Delivery_Manager : MonoBehaviour
     }
 
     void UpdateTimeUI() {
-        String _time = FormatTimeSpan(TimeSpan.FromSeconds(timeLeft));
-        UI_Time.text = (int)Math.Floor(timeLeft) == 0 ? "-" : _time;
+        string _time = FormatTimeSpan(System.TimeSpan.FromSeconds(timeLeft));
+        UI_Time.text = (int)Mathf.Floor(timeLeft) == 0 ? "-" : _time;
     }
 
-    private string FormatTimeSpan(TimeSpan time) {
-        return ((time < TimeSpan.Zero) ? "-" : "") + time.ToString(@"mm\:ss");
+    private string FormatTimeSpan(System.TimeSpan time) {
+        return ((time < System.TimeSpan.Zero) ? "-" : "") + time.ToString(@"mm\:ss");
     }
 
     public void ShowPickupSign(int money) {
@@ -150,15 +145,21 @@ public class Delivery_Manager : MonoBehaviour
         HideSign();
     }
 
+    IEnumerator WaitAndSpawnCustomer()
+    {
+        yield return new WaitForSeconds(Random.Range(spawnTime, spawnTime * 1.5f));
+        SpawnCustomer();
+    }
 
-    void SpawnCustomer() {
-        int i = UnityEngine.Random.Range(0, customerPrefabs.Length);
+
+    public void SpawnCustomer() {
+        GameObject[] customers = GameObject.FindGameObjectsWithTag("Target");
+        if (customers.Length >= maxActiveCustomers) {
+            return;
+        }
+		int i = Random.Range(0, customerPrefabs.Length);
         GameObject customer = customerPrefabs[i];
-        Vector3 playerPos = Delivery_Bike.control.playerPosition();
-        float posX = leftSidewalkGizmo.transform.position.x;
-        posX += UnityEngine.Random.Range(-noise, noise);
-        float posZ = UnityEngine.Random.Range(distance.x, distance.y) + playerPos.z;
-        Vector3 pos = new Vector3(posX, -0.75f, posZ);
+        Vector3 pos = GetRandomPointAheadOfPlayer(); 
         GameObject newCustomer = Instantiate(customer, pos, Quaternion.Euler(new Vector3(0,90,0)));
     }
 
@@ -172,5 +173,31 @@ public class Delivery_Manager : MonoBehaviour
         HideSign();
         gameState = GameState.Playing;
         player.enabled = true;
+    }
+
+    public void MoveSpawnArea()
+    {
+        streetNumber++;
+        //customerSpawnArea.transform.position += distanceToNextCrossing;
+    }
+
+    public Vector3 GetRandomPointAheadOfPlayer()
+    {
+        float playerPosition = player.transform.position.z;
+        float posX = -12.2f;
+
+        float streetMultiplier = streetNumber * distanceToNextCrossing.z;
+        // Min Distance
+        float _minDistance = -70; // Beginning of block
+        float minDistance = _minDistance + streetMultiplier;
+        float finalMinDistance = minDistance > playerPosition ? minDistance : playerPosition;
+        // Max Distance
+        float maxDistance = 90; // End of block
+        float finalMaxDistance = maxDistance + streetMultiplier;
+        // Random Point Between Max / Min
+        float posZ = Random.Range(finalMinDistance, finalMaxDistance);
+        Vector3 finalPos = new Vector3(posX, -0.75f, posZ);
+
+        return finalPos;
     }
 }
