@@ -61,6 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   points: 1
   staySeconds: 3
+  timeout: 15
   turnTime: 1
   walkTime: 1
   walkDistance: 10

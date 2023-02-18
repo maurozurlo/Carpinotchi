@@ -10,6 +10,7 @@ namespace Delivery {
         bool isReceivingPackage;
         int secsReceivingPackage;
         public int staySeconds = 3;
+        public float timeout = 6;
         bool isDone;
         Animator animator;
         Delivery_Manager manager;
@@ -93,18 +94,18 @@ namespace Delivery {
             StartCoroutine(Walk());
             animator.SetTrigger("Run");
             Destroy(gameObject, 6);
-        }
+		}
 
-        IEnumerator Walk()
-        {
-            float fracComplete = 0;
-            while (fracComplete <= 1)
-            {
-                fracComplete += Time.deltaTime / walkTime;
-                transform.position = Vector3.Lerp(startPosition, endPosition, fracComplete);
-                yield return null;
-            }
-        }
-    }
+		IEnumerator Walk()
+		{
+			float fracComplete = 0;
+			while (fracComplete <= 1)
+			{
+				fracComplete += Time.deltaTime / walkTime;
+				transform.position = Vector3.Lerp(startPosition, endPosition, fracComplete);
+				yield return null;
+			}
+		}
+	}
 
 }

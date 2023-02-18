@@ -1543,7 +1543,7 @@ PrefabInstance:
     - target: {fileID: 1420724561924216719, guid: 2efd527bf3256994cb5242e40598801e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 83.8
+      value: 47.9
       objectReference: {fileID: 0}
     - target: {fileID: 1420724561924216719, guid: 2efd527bf3256994cb5242e40598801e,
         type: 3}
@@ -5078,9 +5078,12 @@ MonoBehaviour:
   maxActiveCustomers: 4
   streetNumber: 0
   distanceToNextCrossing: {x: 0, y: 0, z: 200}
+  threshold: 20
+  lastPos: 47.9
+  lastSpawn: 0
   initialSeconds: 15
   maxPackages: 10
-  timeLeft: 10
+  timeLeft: 15
   secondsPerPackage: 0.5
   timeToStartGame: 3
   player: {fileID: 2051934285}

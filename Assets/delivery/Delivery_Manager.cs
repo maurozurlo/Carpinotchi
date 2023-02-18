@@ -38,6 +38,9 @@ public class Delivery_Manager : MonoBehaviour
     // TODO: Make this private after test;
     public int streetNumber = 0;
     public Vector3 distanceToNextCrossing;
+    public float threshold;
+    public float lastPos = 47.9f;
+    public float lastSpawn;
 
     //Audio
     AudioSource AS;
@@ -60,6 +63,7 @@ public class Delivery_Manager : MonoBehaviour
         control = this;
         AS = GetComponent<AudioSource>();
         StartCoroutine("StartGame");
+        InvokeRepeating("CheckIfNeedToSpawn", timeToStartGame * 3, timeToStartGame);
     }
 
     private void Update() {
@@ -159,8 +163,14 @@ public class Delivery_Manager : MonoBehaviour
         }
 		int i = Random.Range(0, customerPrefabs.Length);
         GameObject customer = customerPrefabs[i];
-        Vector3 pos = GetRandomPointAheadOfPlayer(); 
+        Vector3 pos = GetRandomPointAheadOfPlayer();
+
+        if (pos.z == 0)
+        {
+            return;
+        }
         GameObject newCustomer = Instantiate(customer, pos, Quaternion.Euler(new Vector3(0,90,0)));
+        lastSpawn = Time.realtimeSinceStartup;
     }
 
     IEnumerator StartGame()
@@ -190,14 +200,53 @@ public class Delivery_Manager : MonoBehaviour
         // Min Distance
         float _minDistance = -70; // Beginning of block
         float minDistance = _minDistance + streetMultiplier;
-        float finalMinDistance = minDistance > playerPosition ? minDistance : playerPosition;
+		float finalMinDistance;
+
+		if (minDistance > playerPosition) {
+            finalMinDistance = minDistance;
+            Debug.Log($"MIN: Inicio de cuadra + streetMultiplier = {finalMinDistance}");
+        } else {
+            finalMinDistance = playerPosition;
+            Debug.Log($"MIN: Posicion del player = {finalMinDistance}");
+        }
+        
         // Max Distance
         float maxDistance = 90; // End of block
         float finalMaxDistance = maxDistance + streetMultiplier;
+        Debug.Log($"MAX: {finalMaxDistance}");
+
+        float newMinDistance = finalMinDistance + threshold;
+        Debug.Log($"MIN: finalMin + threshold = {newMinDistance}");
+
+        if (newMinDistance > finalMaxDistance) {
+            Debug.Log($"New Min es ({newMinDistance}). Es mayor a la Max ({finalMaxDistance}), no puedo spawnear mas en esta cuadra");
+            return Vector3.zero;
+        }
+
         // Random Point Between Max / Min
-        float posZ = Random.Range(finalMinDistance, finalMaxDistance);
+        float posZ = Random.Range(lastPos + threshold, newMinDistance);
+        Debug.Log($"{posZ} es un numero entre {lastPos} (ultimo spawneo) + {threshold} y new min: ${newMinDistance}");
+
+        if (posZ < finalMinDistance)
+        {
+            Debug.Log($"Si {posZ} es menor a final min distance; entonces usamos final min distance {finalMinDistance}");
+            posZ = Random.Range(finalMinDistance, finalMaxDistance);
+            Debug.Log($"La pos final es {posZ}");
+        }
+
         Vector3 finalPos = new Vector3(posX, -0.75f, posZ);
 
+        lastPos = posZ;
+        
         return finalPos;
+    }
+
+    void CheckIfNeedToSpawn()
+    {
+        if (lastSpawn < (Time.realtimeSinceStartup + timeToStartGame * 5))
+        {
+            Debug.Log(lastSpawn);
+            SpawnCustomer();
+        }
     }
 }
