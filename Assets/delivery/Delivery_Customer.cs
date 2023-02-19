@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Delivery {
     public class Delivery_Customer : MonoBehaviour {
+        int index;
         [SerializeField]
         int points = 1;
 
@@ -23,6 +24,13 @@ namespace Delivery {
         private Quaternion endRotation;
         private Vector3 startPosition;
         private Vector3 endPosition;
+
+        public void SetValues(int _index, int _points = 1, int _staySeconds = 3)
+        {
+            points = _points;
+            staySeconds = _staySeconds;
+            index = _index;
+        }
 
         private void Awake() {
             animator = GetComponentInChildren<Animator>();
@@ -45,6 +53,7 @@ namespace Delivery {
         IEnumerator WaitTillPackageIsDelivered() {
             manager.ShowStaySign(staySeconds - secsReceivingPackage);
             yield return new WaitForSeconds(1);
+            if (manager.gameState != Delivery_Manager.GameState.Playing) yield return null;
             if (!isReceivingPackage) yield return null;
             secsReceivingPackage += 1;
 
@@ -69,7 +78,7 @@ namespace Delivery {
         void Done() {
             isDone = true;
             animator.SetTrigger("Cheer");
-            Delivery_Manager.control.AddToPackagesDelivered(points);
+            Delivery_Manager.control.AddToPackagesDelivered(index, points);
             TurnAroundAndWalk();
         }
 

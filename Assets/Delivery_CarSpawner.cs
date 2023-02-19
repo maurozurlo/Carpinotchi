@@ -9,6 +9,13 @@ public class Delivery_CarSpawner : MonoBehaviour
     public float minSpawnTime = .25f;
     bool canSpawn;
 
+    Vector3[] lanesPos = new Vector3[] { Vector3.zero, Vector3.zero };
+
+    void Start(){
+        lanesPos[0] = leftLane.transform.position;
+        lanesPos[1] = rightLane.transform.position;
+    }
+
     IEnumerator SpawnCar() {
         if (!canSpawn) yield break;
 
@@ -41,6 +48,11 @@ public class Delivery_CarSpawner : MonoBehaviour
     public void MoveLanes(Vector3 distance) {
         leftLane.transform.position += distance;
         rightLane.transform.position += distance;
+    }
+
+    public void ResetPositions(){
+         leftLane.transform.position = lanesPos[0];
+        rightLane.transform.position = lanesPos[1];
     }
 
 

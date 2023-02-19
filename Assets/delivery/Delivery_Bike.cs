@@ -9,8 +9,10 @@ public class Delivery_Bike : MonoBehaviour
     public float crashSpeed = 850;
 
     public GameObject[] wheels;
-    public float speed = 20;
-    public float rotationSpeed = 20;
+    public float initialSpeed = 20;
+    public float initialRotationSpeed = 10;
+    private float speed;
+    private float rotationSpeed;
     Vector3 PrevPos;
     Vector3 NewPos;
     Vector3 ObjVelocity;
@@ -42,13 +44,11 @@ public class Delivery_Bike : MonoBehaviour
         Vector3 force = transform.forward;
         force = new Vector3(force.x, 1, force.z);
         rb.AddForce(force * crashSpeed);
-
         speed = 0;
         rotationSpeed = 0;
         AS.Stop();
         Delivery_Manager.control.GameOver();
     }
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -57,19 +57,21 @@ public class Delivery_Bike : MonoBehaviour
         NewPos = transform.position;
         AS = GetComponent<AudioSource>();
         turningWheelPrevRot = turningWheel.transform.rotation.eulerAngles;
+        InitSpeed();
     }
+
+    public void InitSpeed()
+    {
+        speed = initialSpeed;
+        rotationSpeed = initialRotationSpeed;
+    }
+
 
     void Update()
     {
         float translation = GetPressure(Mathf.Clamp(Input.GetAxis("Vertical"), 0, 1)) * speed;
-        //float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
-
-        
-        //turningWheel.transform.rotation = Quaternion.Euler(new Vector3(turningWheelPrevRot.x, calcRotation(rotation), turningWheelPrevRot.z));
         translation *= Time.deltaTime;
-        //rotation *= Time.deltaTime;
         transform.Translate(0, 0, translation);
-        //transform.Rotate(0, rotation, 0);
         MoveWheels(translation);
 
         PlayAudio(translation);
@@ -92,7 +94,6 @@ public class Delivery_Bike : MonoBehaviour
     void MoveWheels(float rotateSpeed) {
         foreach(GameObject wheel in wheels) {
             float rotate = (rotateSpeed * 25 )* speed * Time.deltaTime;
-            //Debug.Log(rotate);
             wheel.transform.Rotate(new Vector3(0, 0, rotate));
         }
     }

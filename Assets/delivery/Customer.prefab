@@ -64,7 +64,7 @@ MonoBehaviour:
   timeout: 15
   turnTime: 1
   walkTime: 1
-  walkDistance: 10
+  walkDistance: 15
 --- !u!95 &2011872170308502015
 Animator:
   serializedVersion: 3

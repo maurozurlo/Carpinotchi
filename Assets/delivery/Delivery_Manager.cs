@@ -1,6 +1,8 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Delivery_Manager : MonoBehaviour
 {
@@ -29,18 +31,11 @@ public class Delivery_Manager : MonoBehaviour
 
     // Customers
     [Header("Customers")]
-    public float spawnTime = 2;
     public GameObject[] customerPrefabs;
-    public GameObject customerSpawnArea;
-    public Vector2 distance = new Vector2(50, 100);
-    public float noise;
-    public int maxActiveCustomers = 5;
-    // TODO: Make this private after test;
-    public int streetNumber = 0;
-    public Vector3 distanceToNextCrossing;
-    public float threshold;
-    public float lastPos = 47.9f;
-    public float lastSpawn;
+    public const int blocks = 8;
+    List<float> customerPositions = new List<float>();
+    public float threshold = 20;
+
 
     //Audio
     AudioSource AS;
@@ -48,7 +43,8 @@ public class Delivery_Manager : MonoBehaviour
     // Time
     public int initialSeconds = 10;
     public int maxPackages = 20;
-    public float timeLeft = 10;
+    public float initialTimeLeft = 30;
+    float timeLeft;
     public float secondsPerPackage = 0.5f;
     public int timeToStartGame = 3;
 
@@ -58,13 +54,33 @@ public class Delivery_Manager : MonoBehaviour
 
     //Player
     public Delivery_Bike player;
+    private Vector3 originalPlayerPos;
+    private Quaternion originalPlayerRot;
     
     private void Awake() {
         control = this;
         AS = GetComponent<AudioSource>();
+        // Store player initial pos/rot
+        originalPlayerPos = player.transform.position;
+        originalPlayerRot = player.transform.rotation;
+        
         StartCoroutine("StartGame");
-        InvokeRepeating("CheckIfNeedToSpawn", timeToStartGame * 3, timeToStartGame);
+        SpawnCustomers();
     }
+
+    IEnumerator StartGame()
+    {
+        for (int i = 0; i < timeToStartGame; i++)
+        {
+            ShowStartSign(timeToStartGame - i);
+            yield return new WaitForSeconds(1);
+        }
+        HideSign();
+        gameState = GameState.Playing;
+        player.enabled = true;
+        timeLeft = initialTimeLeft;
+    }
+
 
     private void Update() {
         if(gameState == GameState.Playing) {
@@ -89,18 +105,15 @@ public class Delivery_Manager : MonoBehaviour
 
     }
 
-    public void AddToPackagesDelivered(int amount) {
+    public void AddToPackagesDelivered(int index, int amount) {
         
-        float remainingSeconds = Mathf.Clamp(Mathf.CeilToInt(initialSeconds - (secondsPerPackage * Mathf.Min(packagesDelivered, maxPackages))), 2, 10);
+        float remainingSeconds = Mathf.Clamp(Mathf.CeilToInt(initialSeconds - (secondsPerPackage * Mathf.Min(index, maxPackages))), 2, 10);
         timeLeft += remainingSeconds;
-        packagesDelivered += amount;
-        int moneyToEarn = Mathf.CeilToInt(Mathf.Log(10) * packagesDelivered);
-        moneyEarned += moneyToEarn;
+        packagesDelivered++;
+        moneyEarned += amount;
         StartCoroutine(HideSignAfterSeconds(AC_Pickup.length));
         UpdateUI();
-        ShowPickupSign(moneyToEarn);
-
-        StartCoroutine("WaitAndSpawnCustomer");
+        ShowPickupSign(amount);
     }
 
     void UpdateUI() {
@@ -119,13 +132,15 @@ public class Delivery_Manager : MonoBehaviour
 
     public void ShowPickupSign(int money) {
         UI_Messager.text = $"Muy bien, conseguiste ${money}!";
+        float scale = Mathf.Pow(2f, 1.0f / 12f);
+        AS.pitch = Mathf.Pow(scale, 1);
         AS.PlayOneShot(AC_Pickup);
     }
 
     void PlayBeep(int seconds)
     {
-        float pitch = 1.43f - (.15f * seconds);
-        AS.pitch = pitch;
+        float scale = Mathf.Pow(2f, 1.0f / 12f);
+        AS.pitch = Mathf.Pow(scale, seconds);
         AS.PlayOneShot(AC_Stay);
     }
 
@@ -149,104 +164,96 @@ public class Delivery_Manager : MonoBehaviour
         HideSign();
     }
 
-    IEnumerator WaitAndSpawnCustomer()
+    void SpawnCustomers()
     {
-        yield return new WaitForSeconds(Random.Range(spawnTime, spawnTime * 1.5f));
-        SpawnCustomer();
+        // Spawn amount of customers per blocks
+        int iteration = 0;
+        for (int block = 1; block < blocks; block++)
+        {
+            int customersInThisBlock = Mathf.FloorToInt(4.64286f - (0.47619f * block));
+            for (int customer = 0; customer < customersInThisBlock; customer++)
+            {
+                iteration++;
+                SpawnCustomer(block, iteration);
+            }
+            iteration++;
+        }
     }
 
-
-    public void SpawnCustomer() {
-        GameObject[] customers = GameObject.FindGameObjectsWithTag("Target");
-        if (customers.Length >= maxActiveCustomers) {
-            return;
-        }
+    public void SpawnCustomer(int block, int index) {
 		int i = Random.Range(0, customerPrefabs.Length);
         GameObject customer = customerPrefabs[i];
-        Vector3 pos = GetRandomPointAheadOfPlayer();
-
-        if (pos.z == 0)
-        {
-            return;
+        object pos = GetCustomerSpawnPoint(block);
+        if (pos is Vector3 vector) {
+            int points = GetPointsFromIndex(index);
+            int staySeconds = GetStaySecondsFromIndex(index);
+            GameObject newCustomer = Instantiate(customer, vector, Quaternion.Euler(new Vector3(0, 90, 0)));
+            newCustomer.GetComponent<Delivery.Delivery_Customer>().SetValues(index, points, staySeconds);
+            customerPositions.Add(vector.z);
         }
-        GameObject newCustomer = Instantiate(customer, pos, Quaternion.Euler(new Vector3(0,90,0)));
-        lastSpawn = Time.realtimeSinceStartup;
     }
 
-    IEnumerator StartGame()
-    {
-        for (int i = 0; i < timeToStartGame; i++)
+    int GetPointsFromIndex(int index) {
+        return Mathf.CeilToInt(Mathf.Log(10) * index);
+    }
+
+    int GetStaySecondsFromIndex(int index) {
+        return Mathf.Min(Mathf.FloorToInt(0.384142f + (1.44074f * index)), 8);
+    }
+
+    bool checkDistance(float otherCustomerPos) {
+        foreach (float customerPos in customerPositions)
         {
-            ShowStartSign(timeToStartGame - i);
-            yield return new WaitForSeconds(1);
+            float absoluteDistance = Mathf.Abs(otherCustomerPos - customerPos);
+            bool check = absoluteDistance >= threshold;
+            if (!check) return check;
         }
-        HideSign();
-        gameState = GameState.Playing;
-        player.enabled = true;
+        return true;
     }
 
-    public void MoveSpawnArea()
+    public dynamic GetCustomerSpawnPoint(int block)
     {
-        streetNumber++;
-        //customerSpawnArea.transform.position += distanceToNextCrossing;
-    }
-
-    public Vector3 GetRandomPointAheadOfPlayer()
-    {
-        float playerPosition = player.transform.position.z;
-        float posX = -12.2f;
-
-        float streetMultiplier = streetNumber * distanceToNextCrossing.z;
+        const float posX = -12.2f;
+        const float posY = -0.75f;
+        float streetMultiplier = block * 200;
         // Min Distance
-        float _minDistance = -70; // Beginning of block
-        float minDistance = _minDistance + streetMultiplier;
-		float finalMinDistance;
-
-		if (minDistance > playerPosition) {
-            finalMinDistance = minDistance;
-            Debug.Log($"MIN: Inicio de cuadra + streetMultiplier = {finalMinDistance}");
-        } else {
-            finalMinDistance = playerPosition;
-            Debug.Log($"MIN: Posicion del player = {finalMinDistance}");
-        }
-        
+        float minDistance = -70;
+        float finalMinDistance = minDistance + streetMultiplier;  // Beginning of block
         // Max Distance
-        float maxDistance = 90; // End of block
-        float finalMaxDistance = maxDistance + streetMultiplier;
-        Debug.Log($"MAX: {finalMaxDistance}");
-
-        float newMinDistance = finalMinDistance + threshold;
-        Debug.Log($"MIN: finalMin + threshold = {newMinDistance}");
-
-        if (newMinDistance > finalMaxDistance) {
-            Debug.Log($"New Min es ({newMinDistance}). Es mayor a la Max ({finalMaxDistance}), no puedo spawnear mas en esta cuadra");
-            return Vector3.zero;
-        }
-
+        float maxDistance = 90; 
+        float finalMaxDistance = maxDistance + streetMultiplier; // End of block
         // Random Point Between Max / Min
-        float posZ = Random.Range(lastPos + threshold, newMinDistance);
-        Debug.Log($"{posZ} es un numero entre {lastPos} (ultimo spawneo) + {threshold} y new min: ${newMinDistance}");
-
-        if (posZ < finalMinDistance)
-        {
-            Debug.Log($"Si {posZ} es menor a final min distance; entonces usamos final min distance {finalMinDistance}");
-            posZ = Random.Range(finalMinDistance, finalMaxDistance);
-            Debug.Log($"La pos final es {posZ}");
-        }
-
-        Vector3 finalPos = new Vector3(posX, -0.75f, posZ);
-
-        lastPos = posZ;
-        
-        return finalPos;
+        float posZ = Random.Range(finalMinDistance, finalMaxDistance);
+        Vector3 finalPos = new Vector3(posX, posY, posZ);
+        return checkDistance(posZ) ? finalPos : (Vector3?)null;
     }
 
-    void CheckIfNeedToSpawn()
+    public void ResetGame()
     {
-        if (lastSpawn < (Time.realtimeSinceStartup + timeToStartGame * 5))
+        StopAllCoroutines();
+        stopLight.Cleanup();
+        // Store player initial pos/rot
+        player.transform.position = originalPlayerPos;
+        player.transform.rotation = originalPlayerRot;
+        player.InitSpeed();
+
+        Camera.main.GetComponent<CameraShake>().StopAllCoroutines();
+        Camera.main.GetComponent<SmoothFollow>().enabled = true;
+        
+        stopLight.ResetPositions();
+        
+        UI_GameOver.SetActive(false);
+        packagesDelivered = 0;
+        moneyEarned = 0;
+        foreach (GameObject customer in GameObject.FindGameObjectsWithTag("Target"))
         {
-            Debug.Log(lastSpawn);
-            SpawnCustomer();
+            DestroyImmediate(customer);
         }
+        StartCoroutine("StartGame");
+    }
+
+    public void GoBackHome()
+    {
+        SceneManager.LoadScene("House_00");
     }
 }

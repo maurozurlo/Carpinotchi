@@ -22,12 +22,19 @@ public class Delivery_Streetlight : MonoBehaviour
 
 	Delivery_CarSpawner carSpawner;
 
-	color nextColor;
+	public Delivery_UnsafeCrossing UnsafeXing;
 
+	Vector3[] originalPos = { Vector3.zero, Vector3.zero };
+
+	color nextColor;
 
 	void Start()
 	{
 		carSpawner = GetComponent<Delivery_CarSpawner>();
+		currentStreet = 0;
+
+		originalPos[0] = transform.position;
+		originalPos[1] = UnsafeXing.transform.position;
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -35,13 +42,13 @@ public class Delivery_Streetlight : MonoBehaviour
 		if (!other.CompareTag("Player")) return;
 		currWaitingTime = Random.Range(waitingTime.x, waitingTime.y);
 		StartCoroutine(SetupStreetlight(color.red));
-		Delivery_Manager.control.MoveSpawnArea();
 	}
 
-	private void OnTriggerExit(Collider other)
-	{
-		if (!other.CompareTag("Player")) return;
-
+	public void UnsafeCrossing(){
+		StopAllCoroutines();		
+		Cleanup();
+		MoveLanes();
+		currentStreet++;
 	}
 
 	IEnumerator SetupStreetlight(color color)
@@ -50,6 +57,7 @@ public class Delivery_Streetlight : MonoBehaviour
 		switch (color)
 		{
 			case color.red:
+				
 				nextColor = color.yellow;
 				carSpawner.StartSpawning();
 				UI_base.SetActive(true);
@@ -62,34 +70,41 @@ public class Delivery_Streetlight : MonoBehaviour
 				break;
 			case color.green:
 				nextColor = color._;
-				carSpawner.StopSpawning();
 				UI_Yellow.SetActive(false);
 				UI_Green.SetActive(true);
-				transform.position += distanceToNextCrossing;
-				carSpawner.MoveLanes(distanceToNextCrossing);
+				currentStreet++;
+				MoveLanes();
 				break;
 		}
-
 		yield return new WaitForSeconds(currWaitingTime);
 
 		if (nextColor != color._)
 		{
 			StartCoroutine(SetupStreetlight(nextColor));
-		}
-		else
-		{
+		}else if (nextColor == color._){
 			Cleanup();
 		}
 	}
 
-	public void Cleanup()
+	void MoveLanes()
 	{
+		transform.position += distanceToNextCrossing;
+		UnsafeXing.transform.position += distanceToNextCrossing;
+		carSpawner.MoveLanes(distanceToNextCrossing);
+	}
 
+	public void Cleanup()
+	{				
+		carSpawner.StopSpawning();
 		UI_base.SetActive(false);
 		UI_Green.SetActive(false);
 		UI_Red.SetActive(false);
 		UI_Yellow.SetActive(false);
 	}
 
-
+	public void ResetPositions(){
+		transform.position = originalPos[0];
+		UnsafeXing.transform.position = originalPos[1];
+		carSpawner.ResetPositions();
+	}
 }
