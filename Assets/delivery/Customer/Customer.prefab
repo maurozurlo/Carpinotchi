@@ -65,6 +65,27 @@ MonoBehaviour:
   turnTime: 1
   walkTime: 1
   walkDistance: 15
+  disableRandom: 0
+  shirtColors:
+  - {r: 1, g: 0.6745283, b: 0.6745283, a: 1}
+  - {r: 0.48584908, g: 1, b: 0.52078736, a: 1}
+  - {r: 0, g: 0.96275425, b: 1, a: 1}
+  - {r: 1, g: 0.7747783, b: 0.23113209, a: 1}
+  - {r: 1, g: 0.33490568, b: 0.7781565, a: 1}
+  pantColors:
+  - {r: 0.16660734, g: 0.21034478, b: 0.3018868, a: 0}
+  - {r: 0.5330188, g: 0.89342266, b: 1, a: 0}
+  - {r: 0.8254717, g: 1, b: 0.9301513, a: 0}
+  - {r: 0.38679248, g: 0.17332682, b: 0.17332682, a: 0}
+  shoeColors:
+  - {r: 0.254717, g: 0.15018691, b: 0.18405469, a: 0}
+  - {r: 0.38679248, g: 0.21460538, b: 0.08575116, a: 0}
+  - {r: 0.09278212, g: 0.14150941, b: 0.13334249, a: 0}
+  faceTextures:
+  - {fileID: 2800000, guid: 0c5ebce5d89afdf40b461ddbbf5bb475, type: 3}
+  - {fileID: 2800000, guid: ad5ee70bd2d4f5d439e09e2f6457cc30, type: 3}
+  - {fileID: 2800000, guid: aed2369f2ec11a84cac3a3abef89e83d, type: 3}
+  - {fileID: 2800000, guid: fbf32d7d83a332c498cc75c8f650e239, type: 3}
 --- !u!95 &2011872170308502015
 Animator:
   serializedVersion: 3
@@ -283,15 +304,20 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 5b072d15f5b07124e810c440b6c30960, type: 2}
+      objectReference: {fileID: 2100000, guid: 2cc45f9ea4a1ca64399d4c78e92a87b3, type: 2}
     - target: {fileID: 8136901638580996938, guid: f0f20b71dd6f66d4b9e0d734d021630d,
         type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: 27612a8ce826f47449a4e1c9102948fa, type: 2}
+      objectReference: {fileID: 2100000, guid: 3b53846333ca4964abefa20b3582b28f, type: 2}
     - target: {fileID: 8136901638580996938, guid: f0f20b71dd6f66d4b9e0d734d021630d,
         type: 3}
       propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8eae432b912658943b00907f1fe86982, type: 2}
+    - target: {fileID: 8136901638580996938, guid: f0f20b71dd6f66d4b9e0d734d021630d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[3]
       value: 
       objectReference: {fileID: 2100000, guid: 27612a8ce826f47449a4e1c9102948fa, type: 2}
     m_RemovedComponents: []

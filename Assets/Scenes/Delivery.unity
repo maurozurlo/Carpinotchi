@@ -4747,6 +4747,11 @@ PrefabInstance:
       propertyPath: walkDistance
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 1420724561924216723, guid: 2efd527bf3256994cb5242e40598801e,
+        type: 3}
+      propertyPath: disableRandom
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2653487594581305531, guid: 2efd527bf3256994cb5242e40598801e,
         type: 3}
       propertyPath: m_Enabled

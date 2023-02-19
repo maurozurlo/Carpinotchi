@@ -25,6 +25,14 @@ namespace Delivery {
         private Vector3 startPosition;
         private Vector3 endPosition;
 
+        // Randomizing
+        public bool disableRandom;
+        SkinnedMeshRenderer mesh;
+        public Color[] shirtColors;
+        public Color[] pantColors;
+        public Color[] shoeColors;
+        public Texture2D[] faceTextures;
+
         public void SetValues(int _index, int _points = 1, int _staySeconds = 3)
         {
             points = _points;
@@ -39,6 +47,38 @@ namespace Delivery {
 		private void Start()
 		{
             manager = Delivery_Manager.control;
+
+            if(!disableRandom) Randomize();
+        }
+
+        void Randomize()
+        {
+            mesh = GetComponentInChildren<SkinnedMeshRenderer>();
+
+            foreach (Material material in mesh.materials)
+            {
+                if (material.name.Contains("Shirt"))
+                {
+                    material.color = GetRandomColor(shirtColors);
+                }
+                if (material.name.Contains("Pants"))
+                {
+                    material.color = GetRandomColor(pantColors);
+                }
+                if (material.name.Contains("Shoes"))
+                {
+                    material.color = GetRandomColor(shoeColors);
+                }
+                if (material.name.Contains("CustomerFace"))
+                {
+                    material.mainTexture = faceTextures[Random.Range(0, faceTextures.Length)];
+                }
+            }
+        }
+
+
+        Color GetRandomColor(Color[] colorList) {
+            return colorList[Random.Range(0, colorList.Length)];
         }
 
 		private void OnTriggerEnter(Collider collider) {
@@ -53,7 +93,7 @@ namespace Delivery {
         IEnumerator WaitTillPackageIsDelivered() {
             manager.ShowStaySign(staySeconds - secsReceivingPackage);
             yield return new WaitForSeconds(1);
-            if (manager.gameState != Delivery_Manager.GameState.Playing) yield return null;
+            if (manager.gameState == Delivery_Manager.GameState.Ended) yield return null;
             if (!isReceivingPackage) yield return null;
             secsReceivingPackage += 1;
 
