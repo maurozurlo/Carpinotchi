@@ -83,7 +83,12 @@ namespace Delivery {
 
 		private void OnTriggerEnter(Collider collider) {
             // Check if tag == player
-            if (manager.gameState == Delivery_Manager.GameState.Ended) return;
+            if (manager.gameState != Delivery_Manager.GameState.Playing)
+            {
+                StopAllCoroutines();
+                return;
+            }
+            
             if (!collider.CompareTag("Player")) return;
             if (isDone) return;
             isReceivingPackage = true;
@@ -93,7 +98,12 @@ namespace Delivery {
         IEnumerator WaitTillPackageIsDelivered() {
             manager.ShowStaySign(staySeconds - secsReceivingPackage);
             yield return new WaitForSeconds(1);
-            if (manager.gameState == Delivery_Manager.GameState.Ended) yield return null;
+            if (manager.gameState != Delivery_Manager.GameState.Playing){
+                StopAllCoroutines();
+                isReceivingPackage = false;
+                yield return null;
+            }
+
             if (!isReceivingPackage) yield return null;
             secsReceivingPackage += 1;
 

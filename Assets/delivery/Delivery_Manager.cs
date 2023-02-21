@@ -198,7 +198,7 @@ public class Delivery_Manager : MonoBehaviour
     }
 
     int GetStaySecondsFromIndex(int index) {
-        return Mathf.Min(Mathf.FloorToInt(0.384142f + (1.44074f * index)), 8);
+        return Mathf.Min(Mathf.FloorToInt((0.198102f * index) + 2.39992f), 8);
     }
 
     bool checkDistance(float otherCustomerPos) {
