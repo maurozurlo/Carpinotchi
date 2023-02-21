@@ -23,13 +23,26 @@ namespace Cashier
 
 		bool isSelected;
 
-		public GameObject cube;
-
 		BoxCollider boxCollider;
+
+		float price = 5;
+		bool isDisabled;
 
 		private void Start()
 		{
 			boxCollider = GetComponent<BoxCollider>();
+			// DEBUG
+			price = Random.Range(1, 15);
+		}
+
+		public float GetPrice()
+		{
+			return price;
+		}
+
+		public void SetSpeed(float newSpeed)
+		{
+			speed = new Vector3(0, 0, newSpeed);
 		}
 
 		// Update is called once per frame
@@ -41,13 +54,16 @@ namespace Cashier
 			}
 
 
-			if (transform.position.y < -10)
+			if (transform.position.y < -10 && !isDisabled)
 			{
-				Destroy(gameObject);
+				isDisabled = true;
+				Cashier_Manager.control.LostItem(price);
+				Destroy(gameObject, 2);
 			}
 		}
 		void OnMouseDown()
 		{
+			if (isDisabled) return;
 			isSelected = true;
 			screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
 			offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
@@ -65,6 +81,7 @@ namespace Cashier
 
 		private void OnMouseUp()
 		{
+			if (isDisabled) return;
 			boxCollider.enabled = true;
 			isSelected = false;
 			Cashier_Manager.control.CheckIfMatch();
