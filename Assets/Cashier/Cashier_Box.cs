@@ -33,7 +33,7 @@ namespace Cashier
 
         private void OnMouseOver()
         {
-            if (manager.selectedItemType != ItemType._)
+            if (manager.selectedItemType != ItemType._ && manager.gameState == Cashier_Manager.GameState.playing)
             {
                 Glow();
                 selected = true;

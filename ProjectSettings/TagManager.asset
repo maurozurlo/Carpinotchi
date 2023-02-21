@@ -6,6 +6,7 @@ TagManager:
   tags:
   - carpincho
   - Target
+  - DeadZone
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - 
   - Target
   - Moveable
-  - 
+  - DeadZone
   - 
   - 
   - 

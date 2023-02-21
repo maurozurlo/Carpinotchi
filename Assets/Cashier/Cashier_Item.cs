@@ -54,16 +54,23 @@ namespace Cashier
 			}
 
 
-			if (transform.position.y < -10 && !isDisabled)
+			if (transform.position.y < -10)
 			{
-				isDisabled = true;
-				Cashier_Manager.control.LostItem(price);
-				Destroy(gameObject, 2);
+				KillObject();
 			}
 		}
+
+		void KillObject() {
+			if (isDisabled) return;
+			isDisabled = true;
+			Cashier_Manager.control.LostItem(price);
+			Destroy(gameObject, 2);
+		}
+
 		void OnMouseDown()
 		{
 			if (isDisabled) return;
+			if (Cashier_Manager.control.gameState != Cashier_Manager.GameState.playing) return;
 			isSelected = true;
 			screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
 			offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
@@ -85,6 +92,13 @@ namespace Cashier
 			boxCollider.enabled = true;
 			isSelected = false;
 			Cashier_Manager.control.CheckIfMatch();
+		}
+
+		private void OnTriggerEnter(Collider other)
+		{
+			if (other.CompareTag("DeadZone")){
+				KillObject();
+			}
 		}
 	}
 
