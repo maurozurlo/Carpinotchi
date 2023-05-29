@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class Fire_FireControllerC : MonoBehaviour
+public class Fire_Fader : MonoBehaviour
 {
     public float fadeDuration = 1f;
 
@@ -22,6 +22,8 @@ public class Fire_FireControllerC : MonoBehaviour
 
         // Start the PutOutFire coroutine
         StartCoroutine(PutOutFire());
+
+        Destroy(gameObject, fadeDuration);
     }
 
     private IEnumerator PutOutFire()
