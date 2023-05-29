@@ -1,32 +1,40 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class Fire_Fire : MonoBehaviour
 {
     // Attack
-    public float initialDelay = 2f; // Delay before the fire enemy starts draining health
-    public float drainInterval = 1f; // Interval between health drain ticks
-    public int initialDrainAmount = 1; // Health drained initially
-    public int additionalDrainAmount = 1; // Additional health drained after initial delay
-    public int finalDrainAmount = 2; // Health drained after initial delay and additional drain
+    public float initialDelay = 2f;
+    public float drainInterval = 1f;
+    public int initialDrainAmount = 1;
+    public int additionalDrainAmount = 1;
+    public int finalDrainAmount = 2;
 
-    private float drainTimer;
-    private bool isDraining;
-    Fire_Manager manager;
-
-    public int index; // The index of this fire in the mananger;
+    private float attackTimer;
+    private bool isAttacking;
+    private Fire_Manager manager;
+    public int index;
 
     // Health
-    public int fireHealth = 3; // Health of the fire enemy
-    public float drainRate = 0.5f; // Rate at which health drains per second while clicking
-    private bool selfHealthDraining;
+    public int enemyHealth = 3;
+    public float drainRate = 0.5f;
+    private bool isHealthDraining;
     private bool isDead;
 
+    // Foam
+    public GameObject foamParticlePrefab;
+    private GameObject foamParticleInstance;
+    private float foamParticleTimeToLive = 2f;
+
+    // Particles
+    public float fadeDuration = 1f;
+    private ParticleSystem[] particleSystems;
 
     private void Start()
     {
-        // Start the initial delay before health draining begins
-        Invoke("StartDraining", initialDelay);
+        Invoke("StartAttacking", initialDelay);
         manager = Fire_Manager.control;
+        particleSystems = GetComponentsInChildren<ParticleSystem>();
     }
 
     private void Update()
@@ -36,31 +44,34 @@ public class Fire_Fire : MonoBehaviour
         TakeDamage();
     }
 
-    void Attack()
+    private void Attack()
     {
-        if (!isDraining)
-            return;
+        if (!isAttacking) return;
 
-        drainTimer -= Time.deltaTime;
+        attackTimer -= Time.deltaTime;
 
-        if (drainTimer > 0f)
-            return;
+        if (attackTimer > 0f) return;
 
-        if (drainTimer <= -initialDelay)
+        if (attackTimer <= -initialDelay)
+        {
             manager.DrainBuildingHealth(finalDrainAmount);
-        else if (drainTimer <= 0f)
+        }
+        else if (attackTimer <= 0f)
+        {
             manager.DrainBuildingHealth(additionalDrainAmount);
+        }
 
-        drainTimer = drainInterval;
+        attackTimer = drainInterval;
     }
 
-    void TakeDamage()
+    private void TakeDamage()
     {
-        if (selfHealthDraining)
+        if (isHealthDraining)
         {
             DrainHealth(Time.deltaTime * drainRate);
+            Debug.Log(Time.deltaTime);
 
-            if (fireHealth <= 0)
+            if (enemyHealth <= 0)
             {
                 isDead = true;
                 Die();
@@ -70,33 +81,85 @@ public class Fire_Fire : MonoBehaviour
 
     private void DrainHealth(float amount)
     {
-        fireHealth -= Mathf.CeilToInt(amount);
+        enemyHealth -= Mathf.CeilToInt(amount);
     }
 
-    private void StartDraining()
+    private void StartAttacking()
     {
-        drainTimer = drainInterval;
-        isDraining = true;
+        attackTimer = drainInterval;
+        isAttacking = true;
         manager.DrainBuildingHealth(initialDrainAmount);
     }
 
     private void Die()
     {
-        // Perform death logic here
         manager.FireDestroyed(index);
-        GetComponent<Fire_Fader>().enabled = true;
+        StartCoroutine(PutOutFire());
     }
 
     private void OnMouseDown()
     {
-        if (isDead) return;
-        selfHealthDraining = true;
+        if (isDead)
+        {
+            DestroyFoamParticle();
+            return;
+        }
+
+        if(foamParticleInstance)
+        foamParticleInstance.GetComponentInChildren<ParticleSystem>().Stop();
+
+        isHealthDraining = true;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            Vector3 clickPosition = hit.point;
+            Vector3 spawnDirection = Camera.main.transform.position - clickPosition;
+            Quaternion spawnRotation = Quaternion.LookRotation(spawnDirection, Vector3.up);
+            foamParticleInstance = Instantiate(foamParticlePrefab, clickPosition, spawnRotation);
+            foamParticleInstance.transform.SetParent(gameObject.transform);
+        }
+
+
+        StartCoroutine(CountdownFoamParticle());
+    }
+
+    private IEnumerator CountdownFoamParticle()
+    {
+        yield return new WaitForSeconds(foamParticleTimeToLive);
+        DestroyFoamParticle();
+    }
+
+    private void DestroyFoamParticle()
+    {
+        if (foamParticleInstance != null)
+        {
+            Destroy(foamParticleInstance);
+            foamParticleInstance = null;
+        }
     }
 
     private void OnMouseUp()
     {
-        if (isDead) return;
-        selfHealthDraining = false;
+        if (isDead)
+        {
+            DestroyFoamParticle();
+            return;
+        }
+
+        isHealthDraining = false;
     }
 
+    private IEnumerator PutOutFire()
+    {
+        foreach (ParticleSystem ps in particleSystems)
+        {
+            ps.Stop();
+        }
+
+        yield return new WaitForSeconds(fadeDuration * 2);
+        Destroy(gameObject);
+    }
 }

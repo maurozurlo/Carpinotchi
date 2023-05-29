@@ -14271,7 +14271,6 @@ GameObject:
   - component: {fileID: 5391631452592496176}
   - component: {fileID: 5391180726824946722}
   - component: {fileID: -3121011876618111605}
-  - component: {fileID: 5193345628807259080}
   - component: {fileID: 6882298586158578382}
   m_Layer: 0
   m_Name: FireParticle
@@ -19037,20 +19036,10 @@ MonoBehaviour:
   additionalDrainAmount: 1
   finalDrainAmount: 2
   index: 0
-  fireHealth: 3
-  drainRate: 0.5
---- !u!114 &5193345628807259080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5194352332538134048}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: defca2b7749d64e4399f395f45ec99c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  enemyHealth: 100
+  drainRate: 0.1
+  foamParticlePrefab: {fileID: 1000014242603630, guid: dab57dedcc5c6364da89951088e1274a,
+    type: 3}
   fadeDuration: 1
 --- !u!65 &6882298586158578382
 BoxCollider:
