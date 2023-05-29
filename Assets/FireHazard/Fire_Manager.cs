@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,9 +34,11 @@ public class Fire_Manager : MonoBehaviour
     public GameObject fireParticlePrefab;
 
     public bool[] fireSpots = new bool[9];
-    
+
     //Audio
     AudioSource AS;
+
+    public AudioClip fireLoop;
 
     // Time
     public int initialSeconds = 10;
@@ -55,12 +59,13 @@ public class Fire_Manager : MonoBehaviour
         control = this;
         AS = GetComponent<AudioSource>();
 
-        StartCoroutine("StartGame");
-        
+        StartCoroutine(StartGame());
+
     }
 
     IEnumerator StartGame()
     {
+        
         for (int i = 0; i < timeToStartGame; i++)
         {
             ShowStartSign(timeToStartGame - i);
@@ -70,8 +75,12 @@ public class Fire_Manager : MonoBehaviour
         gameState = GameState.Playing;
         //player.enabled = true;
         timeLeft = initialTimeLeft;
-        StartCoroutine("SpawnFires");
+        StartCoroutine(SpawnFires());
         UpdateUI();
+        AS.clip = fireLoop;
+        AS.loop = true;
+        AS.volume = 0.1f;
+        AS.Play();
     }
 
 
@@ -90,8 +99,12 @@ public class Fire_Manager : MonoBehaviour
 
     public void GameOver()
     {
+        AS.volume = 1;
+        AS.clip = null;
+        AS.loop = false;
+        AS.Stop();
         gameState = GameState.Ended;
-        StopAllCoroutines();
+        StopCoroutine("SpawnFires");
         timeLeft = 0;
 
         UI_GameOver.SetActive(true);
@@ -109,13 +122,24 @@ public class Fire_Manager : MonoBehaviour
 
     void UpdateTimeUI()
     {
-        string _time = FormatTimeSpan(System.TimeSpan.FromSeconds(timeLeft));
-        UI_Time.text = (int)Mathf.Floor(timeLeft) == 0 ? "-" : _time;
+        StringBuilder stringBuilder = new StringBuilder();
+        if ((int)Mathf.Floor(timeLeft) == 0)
+        {
+            UI_Time.text = "-";
+        }
+        else
+        {
+            stringBuilder.Append(FormatTimeSpan(System.TimeSpan.FromSeconds(timeLeft)));
+            UI_Time.text = stringBuilder.ToString();
+        }
     }
 
     private string FormatTimeSpan(System.TimeSpan time)
     {
-        return ((time < System.TimeSpan.Zero) ? "-" : "") + time.ToString(@"mm\:ss");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.Append((time < System.TimeSpan.Zero) ? "-" : "");
+        stringBuilder.Append(time.ToString(@"mm\:ss"));
+        return stringBuilder.ToString();
     }
 
     void PlayBeep(int seconds)
@@ -156,19 +180,25 @@ public class Fire_Manager : MonoBehaviour
         // Spawn fire if spot is available
         if (isAvailable)
         {
-            int randomSpot = Random.Range(0, fireSpots.Length);
+            int randomSpot = UnityEngine.Random.Range(0, fireSpots.Length);
             while (fireSpots[randomSpot])
             {
-                randomSpot = Random.Range(0, fireSpots.Length);
+                randomSpot = UnityEngine.Random.Range(0, fireSpots.Length);
             }
             fireSpots[randomSpot] = true;
-            GameObject fire = Instantiate(fireParticlePrefab, GetFireSpawnPosition(randomSpot), Quaternion.Euler(new Vector3(-90,0,0)));
+            GameObject fire = Instantiate(fireParticlePrefab, GetFireSpawnPosition(randomSpot), Quaternion.Euler(new Vector3(-90, 0, 0)));
             firesSpawned++;
             fire.GetComponent<Fire_Fire>().index = randomSpot;
+
+            // Adjust the volume based on the number of active fires
+            int activeFireCount = GetActiveFireCount();
+            float volume = Mathf.Lerp(0.1f, 1f, (float)activeFireCount / fireSpots.Length);
+            AS.volume = volume;
+
         }
 
         yield return new WaitForSeconds(secondsPerFire);
-        StartCoroutine("SpawnFires");
+        StartCoroutine(SpawnFires());
     }
 
     Vector3 GetFireSpawnPosition(int index)
@@ -191,20 +221,20 @@ public class Fire_Manager : MonoBehaviour
 
     public void ResetGame()
     {
-        StopAllCoroutines();
-     
+        StopCoroutine("SpawnFires");
+
         Camera.main.GetComponent<CameraShake>().StopAllCoroutines();
         Camera.main.GetComponent<SmoothFollow>().enabled = true;
 
-        
         UI_GameOver.SetActive(false);
-        
+
         moneyEarned = 0;
         foreach (GameObject fire in GameObject.FindGameObjectsWithTag("Target"))
         {
-            DestroyImmediate(fire);
+            if (fire.CompareTag("Target"))
+                DestroyImmediate(fire);
         }
-        StartCoroutine("StartGame");
+        StartCoroutine(StartGame());
     }
 
     public void GoBackHome()
@@ -226,6 +256,24 @@ public class Fire_Manager : MonoBehaviour
         float remainingSeconds = Mathf.Clamp(Mathf.CeilToInt(initialSeconds - (secondsPerFire * Mathf.Min(index, firesSpawned))), 2, 10);
         timeLeft += remainingSeconds;
         UpdateUI();
+
+        // Adjust the volume based on the number of active fires
+        int activeFireCount = GetActiveFireCount();
+        float volume = Mathf.Lerp(0.1f, 1f, (float)activeFireCount / fireSpots.Length);
+        AS.volume = volume;
+    }
+
+    int GetActiveFireCount()
+    {
+        int count = 0;
+        foreach (bool spot in fireSpots)
+        {
+            if (spot)
+            {
+                count++;
+            }
+        }
+        return count;
     }
 
     int GetPointsFromIndex(int index)
