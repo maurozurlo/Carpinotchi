@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Fire_Fire : MonoBehaviour
 {
+    public new GameObject gameObject;
     // Attack
     public float initialDelay = 2f;
     public float drainInterval = 1f;
@@ -22,13 +23,15 @@ public class Fire_Fire : MonoBehaviour
     private bool isDead;
 
     // Foam
-    public GameObject foamParticlePrefab;
-    private GameObject foamParticleInstance;
+    private Fire_FireParticlePool.FoamParticle foamParticleInstance;
     private float foamParticleTimeToLive = 2f;
 
     // Particles
     public float fadeDuration = 1f;
     private ParticleSystem[] particleSystems;
+
+    // Pool
+    public bool isActive;
 
     private void Start()
     {
@@ -39,6 +42,7 @@ public class Fire_Fire : MonoBehaviour
 
     private void Update()
     {
+        if (manager.gameState != Fire_Manager.GameState.Playing) return;
         if (isDead) return;
         Attack();
         TakeDamage();
@@ -69,8 +73,6 @@ public class Fire_Fire : MonoBehaviour
         if (isHealthDraining)
         {
             DrainHealth(Time.deltaTime * drainRate);
-            Debug.Log(Time.deltaTime);
-
             if (enemyHealth <= 0)
             {
                 isDead = true;
@@ -105,8 +107,11 @@ public class Fire_Fire : MonoBehaviour
             return;
         }
 
-        if(foamParticleInstance)
-        foamParticleInstance.GetComponentInChildren<ParticleSystem>().Stop();
+        if (foamParticleInstance != null)
+        {
+            foamParticleInstance.gameObject.GetComponentInChildren<ParticleSystem>().Stop();
+        }
+        
 
         isHealthDraining = true;
 
@@ -118,8 +123,12 @@ public class Fire_Fire : MonoBehaviour
             Vector3 clickPosition = hit.point;
             Vector3 spawnDirection = Camera.main.transform.position - clickPosition;
             Quaternion spawnRotation = Quaternion.LookRotation(spawnDirection, Vector3.up);
-            foamParticleInstance = Instantiate(foamParticlePrefab, clickPosition, spawnRotation);
-            foamParticleInstance.transform.SetParent(gameObject.transform);
+
+            Fire_FireParticlePool.FoamParticle foamParticle = Fire_FireParticlePool.control.GetPooledFoamParticle();
+            foamParticle.gameObject.transform.SetPositionAndRotation(clickPosition, spawnRotation);
+            foamParticle.gameObject.SetActive(true);
+            foamParticle.isActive = true;
+            foamParticleInstance = foamParticle;
         }
 
 
@@ -136,7 +145,7 @@ public class Fire_Fire : MonoBehaviour
     {
         if (foamParticleInstance != null)
         {
-            Destroy(foamParticleInstance);
+            foamParticleInstance.ReturnToPool();
             foamParticleInstance = null;
         }
     }
@@ -160,6 +169,11 @@ public class Fire_Fire : MonoBehaviour
         }
 
         yield return new WaitForSeconds(fadeDuration * 2);
-        Destroy(gameObject);
+        ReturnToPool();
+    }
+
+    public void ReturnToPool()
+    {
+        Fire_FireParticlePool.control.ReturnFireToPool(this);
     }
 }

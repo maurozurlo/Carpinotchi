@@ -90,7 +90,7 @@ public class Fire_Manager : MonoBehaviour
         {
             timeLeft -= Time.deltaTime;
             UpdateTimeUI();
-            if ((int)Mathf.Floor(timeLeft) == 0)
+            if ((int)Mathf.Floor(timeLeft) == 0 || buildingHealth <= 0)
             {
                 GameOver();
             }
@@ -189,6 +189,12 @@ public class Fire_Manager : MonoBehaviour
             GameObject fire = Instantiate(fireParticlePrefab, GetFireSpawnPosition(randomSpot), Quaternion.Euler(new Vector3(-90, 0, 0)));
             firesSpawned++;
             fire.GetComponent<Fire_Fire>().index = randomSpot;
+
+            ParticleSystem[] particleSystems = fire.GetComponentsInChildren<ParticleSystem>();
+            foreach (ParticleSystem ps in particleSystems)
+            {
+                ps.Play();
+            }
 
             // Adjust the volume based on the number of active fires
             int activeFireCount = GetActiveFireCount();
