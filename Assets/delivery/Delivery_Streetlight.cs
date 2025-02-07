@@ -28,6 +28,8 @@ public class Delivery_Streetlight : MonoBehaviour
 
 	color nextColor;
 
+	IEnumerator enumerator;
+
 	void Start()
 	{
 		carSpawner = GetComponent<Delivery_CarSpawner>();
@@ -41,10 +43,12 @@ public class Delivery_Streetlight : MonoBehaviour
 	{
 		if (!other.CompareTag("Player")) return;
 		currWaitingTime = Random.Range(waitingTime.x, waitingTime.y);
-		StartCoroutine(SetupStreetlight(color.red));
+		enumerator = SetupStreetlight(color.red);
+		StartCoroutine(enumerator);
 	}
 
 	public void UnsafeCrossing(){
+		StopCoroutine(enumerator);
 		StopAllCoroutines();		
 		Cleanup();
 		MoveLanes();
@@ -53,6 +57,7 @@ public class Delivery_Streetlight : MonoBehaviour
 
 	IEnumerator SetupStreetlight(color color)
 	{
+		if (Delivery_Manager.control.gameState != Delivery_Manager.GameState.Playing) yield break;
 		// Start carSpawner
 		switch (color)
 		{
@@ -78,6 +83,8 @@ public class Delivery_Streetlight : MonoBehaviour
 		}
 		yield return new WaitForSeconds(currWaitingTime);
 
+
+
 		if (nextColor != color._)
 		{
 			StartCoroutine(SetupStreetlight(nextColor));
@@ -88,6 +95,8 @@ public class Delivery_Streetlight : MonoBehaviour
 
 	void MoveLanes()
 	{
+		if (Delivery_Manager.control.gameState != Delivery_Manager.GameState.Playing) return;
+		Debug.Log("MoveLanes being executed");
 		transform.position += distanceToNextCrossing;
 		UnsafeXing.transform.position += distanceToNextCrossing;
 		carSpawner.MoveLanes(distanceToNextCrossing);
@@ -95,6 +104,7 @@ public class Delivery_Streetlight : MonoBehaviour
 
 	public void Cleanup()
 	{				
+		
 		carSpawner.StopSpawning();
 		UI_base.SetActive(false);
 		UI_Green.SetActive(false);
@@ -103,6 +113,7 @@ public class Delivery_Streetlight : MonoBehaviour
 	}
 
 	public void ResetPositions(){
+		currentStreet = 0;
 		transform.position = originalPos[0];
 		UnsafeXing.transform.position = originalPos[1];
 		carSpawner.ResetPositions();

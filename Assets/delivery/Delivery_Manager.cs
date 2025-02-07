@@ -14,6 +14,9 @@ public class Delivery_Manager : MonoBehaviour
 
     public GameState gameState = GameState.Start;
 
+    bool isFirstGame = true;
+    public GameObject firstCustomerGO;
+
     public static Delivery_Manager control;
     public TextMeshProUGUI UI_Money;
     public TextMeshProUGUI UI_Time;
@@ -56,6 +59,12 @@ public class Delivery_Manager : MonoBehaviour
     public Delivery_Bike player;
     private Vector3 originalPlayerPos;
     private Quaternion originalPlayerRot;
+
+    // First Customer Data
+    Vector3 _fcp;
+    Quaternion _fcr;
+    int _fcpp;
+    int _fcss;
     
     private void Awake() {
         control = this;
@@ -63,13 +72,24 @@ public class Delivery_Manager : MonoBehaviour
         // Store player initial pos/rot
         originalPlayerPos = player.transform.position;
         originalPlayerRot = player.transform.rotation;
-        
         StartCoroutine("StartGame");
-        SpawnCustomers();
+
+        Delivery_Customer firstCustomer = firstCustomerGO.GetComponent<Delivery_Customer>();
+        _fcp = firstCustomer.transform.position;
+        _fcr = firstCustomer.transform.rotation;
+        _fcpp = firstCustomer.GetPoints();
+        _fcss = firstCustomer.staySeconds;
     }
 
     IEnumerator StartGame()
     {
+        SpawnCustomers();
+        UpdateUI();
+        Camera.main.GetComponent<CameraShake>().StopShake();
+        if (!isFirstGame)
+        {
+            SpawnFirstCustomer();
+        }
         for (int i = 0; i < timeToStartGame; i++)
         {
             ShowStartSign(timeToStartGame - i);
@@ -117,8 +137,8 @@ public class Delivery_Manager : MonoBehaviour
     }
 
     void UpdateUI() {
-        UI_Money.text = $"${moneyEarned}";
-        UI_PackagesDelivered.text = $"{packagesDelivered}";
+        UI_Money.text = moneyEarned > 0 ? $"${moneyEarned}" : "-";
+        UI_PackagesDelivered.text = packagesDelivered > 0 ? $"{packagesDelivered}" : "-";
     }
 
     void UpdateTimeUI() {
@@ -180,6 +200,15 @@ public class Delivery_Manager : MonoBehaviour
         }
     }
 
+    void SpawnFirstCustomer()
+    {
+        int i = Random.Range(0, customerPrefabs.Length);
+        GameObject customerPrefab = customerPrefabs[i];
+        GameObject newCustomer = Instantiate(customerPrefab, _fcp, _fcr);
+        newCustomer.GetComponent<Delivery_Customer>().SetValues(0, _fcpp, _fcss);
+        customerPositions.Add(_fcp.z);
+    }
+
     public void SpawnCustomer(int block, int index) {
 		int i = Random.Range(0, customerPrefabs.Length);
         GameObject customer = customerPrefabs[i];
@@ -188,7 +217,7 @@ public class Delivery_Manager : MonoBehaviour
             int points = GetPointsFromIndex(index);
             int staySeconds = GetStaySecondsFromIndex(index);
             GameObject newCustomer = Instantiate(customer, vector, Quaternion.Euler(new Vector3(0, 90, 0)));
-            newCustomer.GetComponent<Delivery.Delivery_Customer>().SetValues(index, points, staySeconds);
+            newCustomer.GetComponent<Delivery_Customer>().SetValues(index, points, staySeconds);
             customerPositions.Add(vector.z);
         }
     }
@@ -230,6 +259,8 @@ public class Delivery_Manager : MonoBehaviour
 
     public void ResetGame()
     {
+        isFirstGame = false;
+        customerPositions.Clear();
         StopAllCoroutines();
         stopLight.Cleanup();
         // Store player initial pos/rot
@@ -237,7 +268,8 @@ public class Delivery_Manager : MonoBehaviour
         player.transform.rotation = originalPlayerRot;
         player.InitSpeed();
 
-        Camera.main.GetComponent<CameraShake>().StopAllCoroutines();
+//        Camera.main.GetComponent<CameraShake>().StopAllCoroutines();
+        Camera.main.GetComponent<CameraShake>().enabled = false;
         Camera.main.GetComponent<SmoothFollow>().enabled = true;
         
         stopLight.ResetPositions();
@@ -245,10 +277,17 @@ public class Delivery_Manager : MonoBehaviour
         UI_GameOver.SetActive(false);
         packagesDelivered = 0;
         moneyEarned = 0;
+
         foreach (GameObject customer in GameObject.FindGameObjectsWithTag("Target"))
         {
             DestroyImmediate(customer);
         }
+
+        foreach (GameObject car in GameObject.FindGameObjectsWithTag("Obstacle"))
+        {
+            DestroyImmediate(car);
+        }
+
         StartCoroutine("StartGame");
     }
 

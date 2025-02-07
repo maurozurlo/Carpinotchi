@@ -51,7 +51,7 @@ public class Delivery_CarSpawner : MonoBehaviour
     }
 
     public void ResetPositions(){
-         leftLane.transform.position = lanesPos[0];
+        leftLane.transform.position = lanesPos[0];
         rightLane.transform.position = lanesPos[1];
     }
 
