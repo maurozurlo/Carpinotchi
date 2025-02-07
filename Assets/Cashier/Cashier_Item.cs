@@ -88,6 +88,7 @@ namespace Cashier
 
 		private void OnMouseUp()
 		{
+			if (Cashier_Manager.control.gameState != Cashier_Manager.GameState.playing) return;
 			if (isDisabled) return;
 			boxCollider.enabled = true;
 			isSelected = false;
