@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class CustomManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject modal;
+
+    public void OpenModal()
     {
-        
+        modal.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CloseModal()
     {
-        
+        modal.SetActive(false);
     }
 }

@@ -18,6 +18,7 @@ public class MinigameManager : MonoBehaviour
 
     public void LoadScene(string sceneName) {
        if(sceneName == SceneManager.GetActiveScene().name) {
+            modal.SetActive(false);
             return;
         }
 

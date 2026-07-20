@@ -48,7 +48,7 @@ public class Delivery_Manager : MonoBehaviour
     public int maxPackages = 20;
     public float initialTimeLeft = 30;
     float timeLeft;
-    public float secondsPerPackage = 0.5f;
+    public float secondsPerPackage = 2;
     public int timeToStartGame = 3;
 
     // Score
@@ -127,7 +127,7 @@ public class Delivery_Manager : MonoBehaviour
 
     public void AddToPackagesDelivered(int index, int amount) {
         
-        float remainingSeconds = Mathf.Clamp(Mathf.CeilToInt(initialSeconds - (secondsPerPackage * Mathf.Min(index, maxPackages))), 2, 10);
+        float remainingSeconds = Mathf.Clamp(Mathf.CeilToInt(secondsPerPackage * index), 2, 10);
         timeLeft += remainingSeconds;
         packagesDelivered++;
         moneyEarned += amount;
@@ -227,7 +227,7 @@ public class Delivery_Manager : MonoBehaviour
     }
 
     int GetStaySecondsFromIndex(int index) {
-        return Mathf.Min(Mathf.FloorToInt((0.198102f * index) + 2.39992f), 8);
+        return Mathf.Min(Mathf.FloorToInt((0.2f * index) + 2.4f), 8);
     }
 
     bool checkDistance(float otherCustomerPos) {
