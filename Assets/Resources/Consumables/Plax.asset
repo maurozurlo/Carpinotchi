@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4239fecd3c49c04e9be2c0ba4bfb071, type: 3}
   m_Name: Plax
   m_EditorClassIdentifier: 
-  name: Enjuague
-  description: Lavarse los tedien
+  name: Jabon Perfumado
+  description: Para sentirse fresco y limpio
   id: 2
   price: 10
   sprite: {fileID: 21300000, guid: 24da1054331127a4bbede1aec6d5cd35, type: 3}

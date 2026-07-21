@@ -2,9 +2,20 @@
 using System.Collections;
 
 public class TimeManager : MonoBehaviour {
+    public static TimeManager control;
 
     [SerializeField]
-    private float hourLength = 1;
+    private float hourLength = 3600;
+
+    void Awake() {
+        if (control == null) {
+            control = this;
+            DontDestroyOnLoad(gameObject);
+        } else {
+            DestroyImmediate(this);
+        }
+    }
+
     // Start is called before the first frame update
     void Start() {
         StartCoroutine("DecreaseAllStats");
@@ -17,10 +28,20 @@ public class TimeManager : MonoBehaviour {
         StartCoroutine("DecreaseAllStats");
     }
 
-    void DecreaseStats() {
-        Pet.control.energy.ChangeValue(-1);
-        Pet.control.hygiene.ChangeValue(-1);
-        Pet.control.hunger.ChangeValue(-1);
-        Pet.control.sanity.ChangeValue(-1);
+    public float GetHourLength() {
+        return hourLength;
+    }
+
+    public void DecreaseStats() {
+        int amount = Pet.control.isSick ? -2 : -1;
+        Pet.control.energy.ChangeValue(amount);
+        Pet.control.hygiene.ChangeValue(amount);
+        Pet.control.hunger.ChangeValue(amount);
+        Pet.control.sanity.ChangeValue(amount);
+        Pet.control.EvaluateSickness();
+
+        if (SaveManager.control != null) {
+            SaveManager.control.SaveGame();
+        }
     }
 }

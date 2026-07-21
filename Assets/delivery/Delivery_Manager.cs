@@ -122,7 +122,12 @@ public class Delivery_Manager : MonoBehaviour
         UI_GameOver.SetActive(true);
         UI_GameOverText.text = $"Conseguiste ${moneyEarned}";
         HideSign();
-
+        if (MoneyManager.control != null) {
+            MoneyManager.control.WinMoney(moneyEarned);
+        }
+        if (SaveManager.control != null) {
+            SaveManager.control.SaveGame();
+        }
     }
 
     public void AddToPackagesDelivered(int index, int amount) {
@@ -219,6 +224,8 @@ public class Delivery_Manager : MonoBehaviour
             GameObject newCustomer = Instantiate(customer, vector, Quaternion.Euler(new Vector3(0, 90, 0)));
             newCustomer.GetComponent<Delivery_Customer>().SetValues(index, points, staySeconds);
             customerPositions.Add(vector.z);
+        } else {
+            Debug.LogWarning($"Dropped customer spawn in block {block}: no valid point passed the distance check.");
         }
     }
 

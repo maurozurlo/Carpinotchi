@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -170,6 +169,22 @@ public class ItemManager : MonoBehaviour
         itemSelect.UpdateVisuals();
         // Update scrollable List UI
         UpdateScrollableListUI();
+    }
+
+    public void LoadInventory(List<int> ids, List<int> qtys) {
+        foreach (Transform child in itemInventoryList.transform) {
+            Destroy(child.gameObject);
+        }
+        itemList.Clear();
+        AmountList.Clear();
+
+        Item[] consumables = Resources.LoadAll<Item>("Consumables");
+        for (int i = 0; i < ids.Count; i++) {
+            Item item = consumables.FirstOrDefault(e => e.id == ids[i]);
+            if (item != null) {
+                AddItemAmount(item, qtys[i]);
+            }
+        }
     }
 
     public ItemSelect GetItemSlot(int id) {

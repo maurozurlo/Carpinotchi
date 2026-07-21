@@ -69,7 +69,11 @@ public class Delivery_Bike : MonoBehaviour
 
     void Update()
     {
-        float translation = GetPressure(Mathf.Clamp(Input.GetAxis("Vertical"), 0, 1)) * speed;
+        float keyboardInput = Mathf.Clamp(Input.GetAxis("Vertical"), 0, 1);
+        float holdInput = Input.GetMouseButton(0) ? 1 : 0;
+        float brakeInput = Mathf.Max(keyboardInput, holdInput);
+
+        float translation = GetPressure(brakeInput) * speed;
         translation *= Time.deltaTime;
         transform.Translate(0, 0, translation);
         MoveWheels(translation);

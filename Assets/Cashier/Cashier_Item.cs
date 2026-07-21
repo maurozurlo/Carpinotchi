@@ -64,6 +64,7 @@ namespace Cashier
 			if (isDisabled) return;
 			isDisabled = true;
 			Cashier_Manager.control.LostItem(price);
+			Cashier_Manager.control.UnSelectItem();
 			Destroy(gameObject, 2);
 		}
 

@@ -5,7 +5,7 @@ using TMPro;
 
 public class MoneyManager : MonoBehaviour {
     public static MoneyManager control;
-    private int currentMoney = 9999; // DEBUG MONEY
+    private int currentMoney = 50;
     GameObject money;
     void Awake() {
         if (!control) {
@@ -31,8 +31,14 @@ public class MoneyManager : MonoBehaviour {
         UpdateGraphics();
     }
 
+    public void LoadMoney(int amount) {
+        currentMoney = amount;
+        UpdateGraphics();
+    }
+
     void UpdateGraphics() {
         GameObject money = GetMoneyDisplay();
+        if (!money) return;
         money.GetComponent<TextMeshProUGUI>().text = string.Format("{0:C2}", currentMoney);
     }
 

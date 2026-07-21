@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class MinigameManager : MonoBehaviour
 {
     public GameObject modal;
-    
+
     public void OpenModal() {
         modal.SetActive(true);
     }
@@ -20,6 +20,10 @@ public class MinigameManager : MonoBehaviour
        if(sceneName == SceneManager.GetActiveScene().name) {
             modal.SetActive(false);
             return;
+        }
+
+        if (SaveManager.control != null) {
+            SaveManager.control.SaveGame();
         }
 
        // TODO: Make me async

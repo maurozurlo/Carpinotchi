@@ -106,10 +106,10 @@ public class Delivery_Customer : MonoBehaviour
 		{
 			StopAllCoroutines();
 			isReceivingPackage = false;
-			yield return null;
+			yield break;
 		}
 
-		if (!isReceivingPackage) yield return null;
+		if (!isReceivingPackage) yield break;
 		secsReceivingPackage += 1;
 
 		if (secsReceivingPackage == staySeconds)

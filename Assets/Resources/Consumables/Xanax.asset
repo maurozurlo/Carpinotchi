@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4239fecd3c49c04e9be2c0ba4bfb071, type: 3}
   m_Name: Xanax
   m_EditorClassIdentifier: 
-  name: Alplax
-  description: Droga tranquilizadora
+  name: Te de Tilo
+  description: Una infusion calentita que relaja la cabeza
   id: 3
   price: 5
   sprite: {fileID: 21300000, guid: f0fb9dfb342c18b4bba345e521ac89f0, type: 3}

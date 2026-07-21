@@ -170,8 +170,8 @@ GameObject:
   m_Component:
   - component: {fileID: 267344461}
   - component: {fileID: 267344460}
-  - component: {fileID: 267344463}
   - component: {fileID: 267344462}
+  - component: {fileID: 267344499}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -215,10 +215,57 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 372960e66687af14eb78668b5c1ab04a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hourLength: 1
+  m_Name:
+  m_EditorClassIdentifier:
+  hourLength: 3600
+--- !u!1 &267344480
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 267344481}
+  - component: {fileID: 267344463}
+  m_Layer: 0
+  m_Name: StatsUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &267344481
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267344480}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &267344463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267344480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d5aa532f01f9f47924e4282cbc481b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  energyMeter: {fileID: 1848658762}
+  hungerMeter: {fileID: 232178214}
+  sanityMeter: {fileID: 535238896}
+  hygieneMeter: {fileID: 913753156}
+--- !u!114 &267344499
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -227,13 +274,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 267344459}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78d5aa532f01f9f47924e4282cbc481b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  energyMeter: {fileID: 1848658762}
-  hungerMeter: {fileID: 232178214}
-  sanityMeter: {fileID: 535238896}
-  hygieneMeter: {fileID: 913753156}
+  m_Script: {fileID: 11500000, guid: 53d35bf14de346d59e89e8ff7fadd4c8, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1 &359197385 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8182515813032502763, guid: 8f02b9b9ab082fa4bbacc015b03437f5,

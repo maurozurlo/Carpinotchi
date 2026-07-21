@@ -69,6 +69,8 @@ namespace Cashier
         public TextMeshProUGUI ringed, money, broken, gameOverText;
         public TextMeshProUGUI UI_Messager;
 
+        private TextMeshProUGUI timeText;
+
         private void Awake()
         {
             if (!control)
@@ -78,8 +80,11 @@ namespace Cashier
 
             foreach (GameObject target in _targets)
             {
+                if (target == null) continue;
                 targets.Add(target.GetComponent<Cashier_Box>());
             }
+
+            timeText = timeUI.GetComponent<TextMeshProUGUI>();
         }
 
         public void RestartGame()
@@ -116,11 +121,18 @@ namespace Cashier
             if (gameState == GameState.playing)
             {
                 gameTimer += Time.deltaTime;
+                UpdateTimeUI();
                 if (gameTimer >= maxGameTime)
                 {
                     EndGame();
                 }
             }
+        }
+
+        void UpdateTimeUI()
+        {
+            float remaining = Mathf.Max(0, maxGameTime - gameTimer);
+            timeText.text = System.TimeSpan.FromSeconds(remaining).ToString(@"mm\:ss");
         }
 
         IEnumerator ShowInitialMessage()
@@ -266,6 +278,12 @@ namespace Cashier
             UnSelectItem();
             GameOverScreen.SetActive(true);
             gameOverText.text = $"Felicidades, lograste hacer {score:C}";
+            if (MoneyManager.control != null) {
+                MoneyManager.control.WinMoney(Mathf.CeilToInt(score));
+            }
+            if (SaveManager.control != null) {
+                SaveManager.control.SaveGame();
+            }
         }
 
         void DisplayHideUI(bool newValue)
